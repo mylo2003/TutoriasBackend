@@ -20,9 +20,9 @@ public class Agendado {
     @Column(name = "id_agendado")
     private Integer idAgendado;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", nullable = false)
-//    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_horario", nullable = false)

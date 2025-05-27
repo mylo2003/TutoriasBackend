@@ -19,5 +19,6 @@ public class UsuarioRepository implements UserRepository{
     @Autowired
     private UserMapper mapper;
 
+    @Override
     public List<User> getAll(){ return mapper.toUsers((List<Usuario>) usuarioCrudRepository.findAll()); }
 }

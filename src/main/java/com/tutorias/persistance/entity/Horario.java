@@ -26,13 +26,13 @@ public class Horario {
     @JoinColumn(name = "id_salon", nullable = false)
     private Salon salon;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_materia", nullable = false)
-//    private Materia materia;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_usuario", nullable = false)
-//    private Usuario usuario;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_materia", nullable = false)
+    private Materia materia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     @Column(name = "descripcion", length = 200)
     private String descripcion;
