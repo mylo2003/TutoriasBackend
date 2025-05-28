@@ -1,7 +1,8 @@
 package com.tutorias.web.controller;
 
-import com.tutorias.domain.model.Schedule;
-import com.tutorias.domain.service.ScheduleService;
+import com.tutorias.domain.dto.CreateClassroomDTO;
+import com.tutorias.domain.model.Classroom;
+import com.tutorias.domain.service.ClassroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,35 +13,35 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/horarios")
-public class ScheduleController {
+@RequestMapping("/salones")
+public class ClassroomController {
     @Autowired
-    private ScheduleService scheduleService;
+    private ClassroomService classroomService;
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> getSchedules() {
+    public ResponseEntity<List<Classroom>> getClassrooms() {
         try {
-            List<Schedule> scheduleList = scheduleService.getAll();
+            List<Classroom> classroomList = classroomService.getAll();
 
-            if (scheduleList.isEmpty()) {
+            if (classroomList.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
 
-            return ResponseEntity.ok(scheduleList);
+            return ResponseEntity.ok(classroomList);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/{idHorario}")
-    public ResponseEntity<?> getSchedule(@PathVariable int idHorario) {
+    @GetMapping("/{idSalon}")
+    public ResponseEntity<?> getClassroom(@PathVariable int idSalon) {
         try {
-            Optional<Schedule> schedule = scheduleService.getById(idHorario);
-            if (schedule.isPresent()) {
-                return ResponseEntity.ok(schedule.get());
+            Optional<Classroom> classroom = classroomService.getById(idSalon);
+            if (classroom.isPresent()) {
+                return ResponseEntity.ok(classroom.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "Horario no encontrado"));
+                        .body(Map.of("error", "Salon no encontrado"));
             }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -49,10 +50,10 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSchedule(@RequestBody Schedule schedule) {
+    public ResponseEntity<?> createClassroom(@RequestBody CreateClassroomDTO classroom) {
         try {
-            Schedule created = scheduleService.createSchedule(schedule);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            classroomService.createClassroom(classroom);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Salón creado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

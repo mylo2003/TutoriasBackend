@@ -1,7 +1,8 @@
 package com.tutorias.web.controller;
 
-import com.tutorias.domain.model.Schedule;
-import com.tutorias.domain.service.ScheduleService;
+import com.tutorias.domain.dto.CreateBlockDTO;
+import com.tutorias.domain.model.Block;
+import com.tutorias.domain.service.BlockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,35 +13,35 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/horarios")
-public class ScheduleController {
+@RequestMapping("/bloques")
+public class BlockController {
     @Autowired
-    private ScheduleService scheduleService;
+    private BlockService blockService;
 
     @GetMapping
-    public ResponseEntity<List<Schedule>> getSchedules() {
+    public ResponseEntity<List<Block>> getBlokes() {
         try {
-            List<Schedule> scheduleList = scheduleService.getAll();
+            List<Block> blockList = blockService.getAll();
 
-            if (scheduleList.isEmpty()) {
+            if (blockList.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
 
-            return ResponseEntity.ok(scheduleList);
+            return ResponseEntity.ok(blockList);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/{idHorario}")
-    public ResponseEntity<?> getSchedule(@PathVariable int idHorario) {
+    @GetMapping("/{idBloque}")
+    public ResponseEntity<?> getBlock(@PathVariable int idBloque) {
         try {
-            Optional<Schedule> schedule = scheduleService.getById(idHorario);
-            if (schedule.isPresent()) {
-                return ResponseEntity.ok(schedule.get());
+            Optional<Block> block = blockService.getById(idBloque);
+            if (block.isPresent()) {
+                return ResponseEntity.ok(block.get());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "Horario no encontrado"));
+                        .body(Map.of("error", "Bloque no encontrado"));
             }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -49,10 +50,10 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSchedule(@RequestBody Schedule schedule) {
+    public ResponseEntity<?> createBlock(@RequestBody CreateBlockDTO block) {
         try {
-            Schedule created = scheduleService.createSchedule(schedule);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            blockService.createBlock(block);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Bloque creado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())
