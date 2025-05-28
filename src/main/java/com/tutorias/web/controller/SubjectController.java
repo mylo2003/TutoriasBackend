@@ -60,4 +60,16 @@ public class SubjectController {
             );
         }
     }
+
+    @DeleteMapping("/{idMateria}")
+    public ResponseEntity<?> deleteSubject(@PathVariable int idMateria) {
+        try {
+            subjectService.deleteSubject(idMateria);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Materia eliminada exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

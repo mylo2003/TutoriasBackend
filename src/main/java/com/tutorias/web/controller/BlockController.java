@@ -60,4 +60,16 @@ public class BlockController {
             );
         }
     }
+
+    @DeleteMapping("/{idBloque}")
+    public ResponseEntity<?> deleteBlock(@PathVariable int idBloque) {
+        try {
+            blockService.deleteBlock(idBloque);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Bloque eliminado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

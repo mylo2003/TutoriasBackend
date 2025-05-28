@@ -1,5 +1,6 @@
 package com.tutorias.persistance.repository;
 
+import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
 import com.tutorias.persistance.crud.HorarioCrudRepository;
@@ -14,6 +15,7 @@ import com.tutorias.persistance.mapper.ScheduleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,7 @@ public class HorarioRepository implements ScheduleRepository {
     }
 
     @Override
-    public Schedule create(Schedule schedule) {
+    public void create(CreateScheduleDTO schedule) {
         Salon salon = salonCrudRepository.findById(schedule.getClassroomId())
                 .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
 
@@ -53,13 +55,26 @@ public class HorarioRepository implements ScheduleRepository {
         Usuario usuario = usuarioCrudRepository.findById(schedule.getUserId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Horario horario = mapper.toHorario(schedule);
+        Horario horario = new Horario();
 
         horario.setSalon(salon);
         horario.setMateria(materia);
         horario.setUsuario(usuario);
+        horario.setDescripcion(schedule.getDescription());
+        horario.setFechaHorario(schedule.getScheduleDate());
+        horario.setHoraInicio(schedule.getStartTime());
+        horario.setHoraFin(schedule.getEndTime());
         horario.setModo("DISPONIBLE");
-        Horario saved = jpaRepository.save(horario);
-        return mapper.toSchedule(saved);
+        jpaRepository.save(horario);
+    }
+
+    @Override
+    public void delete(int scheduleId) {
+        Horario horario = jpaRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        horario.setIsDeleted(true);
+        horario.setDeletedAt(LocalDateTime.now());
+        jpaRepository.save(horario);
     }
 }

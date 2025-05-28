@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {BookingMapper.class})
 public interface ScheduleMapper {
     @Mappings({
+            @Mapping(source = "idHorario", target = "scheduleId"),
             @Mapping(source = "salon.idSalon", target = "classroomId"),
             @Mapping(source = "materia.idMateria", target = "subjectId"),
             @Mapping(source = "usuario.idUsuario", target = "userId"),
@@ -27,7 +28,6 @@ public interface ScheduleMapper {
     List<Schedule> toSchedules(List<Horario> horarios);
 
     @InheritInverseConfiguration
-    @Mapping(target = "idHorario", ignore = true)
     @Mapping(target = "salon", ignore = true)
     @Mapping(target = "materia", ignore = true)
     @Mapping(target = "usuario", ignore = true)

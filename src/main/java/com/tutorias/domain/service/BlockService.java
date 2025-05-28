@@ -25,4 +25,8 @@ public class BlockService {
     public void createBlock(CreateBlockDTO block) {
         blockRepository.create(block);
     }
+
+    public void deleteBlock(int blockId) {
+        blockRepository.delete(blockId);
+    }
 }

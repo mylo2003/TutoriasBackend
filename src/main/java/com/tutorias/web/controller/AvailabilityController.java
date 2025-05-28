@@ -82,4 +82,16 @@ public class AvailabilityController {
             );
         }
     }
+
+    @DeleteMapping("/{idDisponibilidad}")
+    public ResponseEntity<?> deleteAvailability(@PathVariable int idDisponibilidad) {
+        try {
+            availabilityService.deleteAvailability(idDisponibilidad);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Disponibilidad eliminada exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

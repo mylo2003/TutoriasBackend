@@ -1,5 +1,6 @@
 package com.tutorias.domain.service;
 
+import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,11 @@ public class ScheduleService {
         return scheduleRepository.getById(scheduleId);
     }
 
-    public Schedule createSchedule(Schedule schedule) {
-        return scheduleRepository.create(schedule);
+    public void createSchedule(CreateScheduleDTO schedule) {
+        scheduleRepository.create(schedule);
+    }
+
+    public void deleteSchedule(int scheduleId) {
+        scheduleRepository.delete(scheduleId);
     }
 }

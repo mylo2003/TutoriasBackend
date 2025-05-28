@@ -1,5 +1,6 @@
 package com.tutorias.web.controller;
 
+import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,22 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createSchedule(@RequestBody Schedule schedule) {
+    public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleDTO schedule) {
         try {
-            Schedule created = scheduleService.createSchedule(schedule);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            scheduleService.createSchedule(schedule);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Horario creado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
+
+    @DeleteMapping("/{idHorario}")
+    public ResponseEntity<?> deleteSchedule(@PathVariable int idHorario) {
+        try {
+            scheduleService.deleteSchedule(idHorario);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Horario eliminado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

@@ -25,4 +25,8 @@ public class SubjectService {
     public void createSubject(CreateSubjectDTO subject) {
         subjectRepository.create(subject);
     }
+
+    public void deleteSubject(int subjectId) {
+        subjectRepository.delete(subjectId);
+    }
 }

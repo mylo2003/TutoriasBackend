@@ -4,6 +4,7 @@ import com.tutorias.domain.dto.CreateCareerDTO;
 import com.tutorias.domain.model.Career;
 import com.tutorias.domain.repository.CareerRepository;
 import com.tutorias.persistance.crud.CarreraCrudRepository;
+import com.tutorias.persistance.entity.Bloque;
 import com.tutorias.persistance.entity.Carrera;
 import com.tutorias.persistance.mapper.CareerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,13 @@ public class CarreraRepository implements CareerRepository {
 
         carrera.setNombreCarrera(career.getCareerName());
         jpaRepository.save(carrera);
+    }
+
+    @Override
+    public void delete(int careerId) {
+        Carrera carrera = jpaRepository.findById(careerId)
+                .orElseThrow(() -> new RuntimeException("Carrera no encontrada"));
+
+        jpaRepository.deleteById(carrera.getIdCarrera());
     }
 }

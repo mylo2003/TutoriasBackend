@@ -53,4 +53,13 @@ public class MateriaRepository implements SubjectRepository {
         materia.setNombreMateria(subject.getSubjectName());
         jpaRepository.save(materia);
     }
+
+    @Override
+    public void delete(int subjectId) {
+        Materia materia = jpaRepository.findById(subjectId)
+                .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
+
+        materia.setIsDeleted(true);
+        jpaRepository.save(materia);
+    }
 }

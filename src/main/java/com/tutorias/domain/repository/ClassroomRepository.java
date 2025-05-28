@@ -10,4 +10,5 @@ public interface ClassroomRepository {
     List<Classroom> getAll();
     Optional<Classroom> getById(int classroomId);
     void create(CreateClassroomDTO classroom);
+    void delete(int classroomId);
 }

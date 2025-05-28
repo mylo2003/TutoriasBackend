@@ -31,4 +31,8 @@ public class AvailabilityService {
     public void createAvailability(CreateAvailabilityDTO availability) {
         availabilityRepository.create(availability);
     }
+
+    public void deleteAvailability(int availabilityId) {
+        availabilityRepository.delete(availabilityId);
+    }
 }

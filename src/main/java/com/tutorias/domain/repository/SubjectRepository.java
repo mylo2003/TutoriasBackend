@@ -10,4 +10,5 @@ public interface SubjectRepository {
     List<Subject> getAll();
     Optional<Subject> getById(int subjectId);
     void create(CreateSubjectDTO subject);
+    void delete(int subjectId);
 }

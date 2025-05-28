@@ -113,4 +113,12 @@ public class DisponibilidadRepository implements AvailabilityRepository {
         disponibilidad.setHoraFin(availability.getEndTime());
         jpaRepository.save(disponibilidad);
     }
+
+    @Override
+    public void delete(int availabilityId) {
+        Disponibilidad disponibilidad = jpaRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+
+        jpaRepository.deleteById(disponibilidad.getIdDisponibilidad());
+    }
 }

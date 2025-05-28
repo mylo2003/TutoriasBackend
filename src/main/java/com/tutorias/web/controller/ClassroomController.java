@@ -60,4 +60,16 @@ public class ClassroomController {
             );
         }
     }
+
+    @DeleteMapping("/{idSalon}")
+    public ResponseEntity<?> deleteClassroom(@PathVariable int idSalon) {
+        try {
+            classroomService.deleteClassroom(idSalon);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Salón eliminado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

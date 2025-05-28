@@ -10,4 +10,5 @@ public interface CareerRepository {
     List<Career> getAll();
     Optional<Career> getById(int careerId);
     void create(CreateCareerDTO career);
+    void delete(int careerId);
 }

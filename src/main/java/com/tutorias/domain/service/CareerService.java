@@ -25,4 +25,8 @@ public class CareerService {
     public void createCareer(CreateCareerDTO career) {
         careerRepository.create(career);
     }
+
+    public void deleteCareer(int careerId) {
+        careerRepository.delete(careerId);
+    }
 }

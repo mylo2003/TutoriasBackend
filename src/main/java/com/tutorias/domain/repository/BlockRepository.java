@@ -10,4 +10,5 @@ public interface BlockRepository {
     List<Block> getAll();
     Optional<Block> getById(int blockId);
     void create(CreateBlockDTO block);
+    void delete(int blockId);
 }

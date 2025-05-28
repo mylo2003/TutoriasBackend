@@ -47,4 +47,12 @@ public class SalonRepository implements ClassroomRepository {
         salon.setUbicacion(classroom.getLocation());
         jpaRepository.save(salon);
     }
+
+    @Override
+    public void delete(int classroomId) {
+        Salon salon = jpaRepository.findById(classroomId)
+                .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
+
+        jpaRepository.deleteById(salon.getIdSalon());
+    }
 }

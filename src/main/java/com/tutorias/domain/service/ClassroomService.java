@@ -25,4 +25,8 @@ public class ClassroomService {
     public void createClassroom(CreateClassroomDTO classroom) {
         classroomRepository.create(classroom);
     }
+
+    public void deleteClassroom(int classroomId) {
+        classroomRepository.delete(classroomId);
+    }
 }
