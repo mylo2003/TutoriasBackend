@@ -14,9 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Subject {
     private int subjectId;
-//    private int careerId;
     private String subjectName;
-//    private Boolean isDeleted;
     private Career career;
     private List<SubjectUser> subjectUsers;
 }
