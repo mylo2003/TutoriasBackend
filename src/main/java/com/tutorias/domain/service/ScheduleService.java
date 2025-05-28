@@ -26,6 +26,10 @@ public class ScheduleService {
         scheduleRepository.create(schedule);
     }
 
+    public void updateSchedule(int scheduleId, CreateScheduleDTO schedule) {
+        scheduleRepository.update(scheduleId, schedule);
+    }
+
     public void deleteSchedule(int scheduleId) {
         scheduleRepository.delete(scheduleId);
     }

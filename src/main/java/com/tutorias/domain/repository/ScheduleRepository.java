@@ -10,5 +10,6 @@ public interface ScheduleRepository {
     List<Schedule> getAll();
     Optional<Schedule> getById(int scheduleId);
     void create(CreateScheduleDTO schedule);
+    void update(int scheduleId, CreateScheduleDTO schedule);
     void delete(int scheduleId);
 }

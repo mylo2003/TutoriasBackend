@@ -65,7 +65,7 @@ public class BlockController {
     public ResponseEntity<?> deleteBlock(@PathVariable int idBloque) {
         try {
             blockService.deleteBlock(idBloque);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Bloque eliminado exitosamente");
+            return ResponseEntity.status(HttpStatus.OK).body("Bloque eliminado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

@@ -1,6 +1,7 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateAvailabilityDTO;
+import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.service.AvailabilityService;
@@ -83,11 +84,23 @@ public class AvailabilityController {
         }
     }
 
+    @PutMapping("/{idDisponibilidad}")
+    public ResponseEntity<?> updateSchedule(@PathVariable int idDisponibilidad, @RequestBody CreateAvailabilityDTO availability) {
+        try {
+            availabilityService.updateAvailability(idDisponibilidad, availability);
+            return ResponseEntity.status(HttpStatus.OK).body("Disponibilidad actualizada exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
+
     @DeleteMapping("/{idDisponibilidad}")
     public ResponseEntity<?> deleteAvailability(@PathVariable int idDisponibilidad) {
         try {
             availabilityService.deleteAvailability(idDisponibilidad);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Disponibilidad eliminada exitosamente");
+            return ResponseEntity.status(HttpStatus.OK).body("Disponibilidad eliminada exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

@@ -115,6 +115,32 @@ public class DisponibilidadRepository implements AvailabilityRepository {
     }
 
     @Override
+    public void update(int availabilityId, CreateAvailabilityDTO availability) {
+        Disponibilidad disponibilidad = jpaRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+
+        if (availability.getClassroomId() != 0) {
+            Salon salon = salonCrudRepository.findById(availability.getClassroomId())
+                    .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
+            disponibilidad.setSalon(salon);
+        }
+
+        if (availability.getDayOfWeek() != null) {
+            disponibilidad.setDiaSemana(availability.getDayOfWeek());
+        }
+
+        if (availability.getStartTime() != null) {
+            disponibilidad.setHoraInicio(availability.getStartTime());
+        }
+
+        if (availability.getEndTime() != null) {
+            disponibilidad.setHoraFin(availability.getEndTime());
+        }
+
+        jpaRepository.save(disponibilidad);
+    }
+
+    @Override
     public void delete(int availabilityId) {
         Disponibilidad disponibilidad = jpaRepository.findById(availabilityId)
                 .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));

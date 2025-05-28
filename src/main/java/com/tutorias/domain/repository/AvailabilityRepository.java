@@ -13,5 +13,6 @@ public interface AvailabilityRepository {
     Optional<Availability> getById(int availabilityId);
     Page<Availability> filterAvailability(Integer classroomId, String dayOfWeek, LocalTime startTime, LocalTime endTime, int page, int elements);
     void create(CreateAvailabilityDTO availabilityId);
+    void update(int availabilityId, CreateAvailabilityDTO availability);
     void delete(int availabilityId);
 }

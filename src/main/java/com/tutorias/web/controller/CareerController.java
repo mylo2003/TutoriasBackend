@@ -65,7 +65,7 @@ public class CareerController {
     public ResponseEntity<?> deleteCareer(@PathVariable int idCarrera) {
         try {
             careerService.deleteCareer(idCarrera);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Carrera eliminada exitosamente");
+            return ResponseEntity.status(HttpStatus.OK).body("Carrera eliminada exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

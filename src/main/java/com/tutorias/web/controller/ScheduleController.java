@@ -61,11 +61,23 @@ public class ScheduleController {
         }
     }
 
+    @PutMapping("/{idHorario}")
+    public ResponseEntity<?> updateSchedule(@PathVariable int idHorario, @RequestBody CreateScheduleDTO schedule) {
+        try {
+            scheduleService.updateSchedule(idHorario, schedule);
+            return ResponseEntity.status(HttpStatus.OK).body("Horario actualizado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
+
     @DeleteMapping("/{idHorario}")
     public ResponseEntity<?> deleteSchedule(@PathVariable int idHorario) {
         try {
             scheduleService.deleteSchedule(idHorario);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Horario eliminado exitosamente");
+            return ResponseEntity.status(HttpStatus.OK).body("Horario eliminado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

@@ -69,6 +69,48 @@ public class HorarioRepository implements ScheduleRepository {
     }
 
     @Override
+    public void update(int scheduleId, CreateScheduleDTO schedule) {
+        Horario horario = jpaRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        if (schedule.getClassroomId() != 0) {
+            Salon salon = salonCrudRepository.findById(schedule.getClassroomId())
+                    .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
+            horario.setSalon(salon);
+        }
+
+        if (schedule.getSubjectId() != 0) {
+            Materia materia = materiaCrudRepository.findById(schedule.getSubjectId())
+                    .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
+            horario.setMateria(materia);
+        }
+
+        if (schedule.getUserId() != 0) {
+            Usuario usuario = usuarioCrudRepository.findById(schedule.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            horario.setUsuario(usuario);
+        }
+
+        if (schedule.getDescription() != null) {
+            horario.setDescripcion(schedule.getDescription());
+        }
+
+        if (schedule.getScheduleDate() != null) {
+            horario.setFechaHorario(schedule.getScheduleDate());
+        }
+
+        if (schedule.getStartTime() != null) {
+            horario.setHoraInicio(schedule.getStartTime());
+        }
+
+        if (schedule.getEndTime() != null) {
+            horario.setHoraFin(schedule.getEndTime());
+        }
+
+        jpaRepository.save(horario);
+    }
+
+    @Override
     public void delete(int scheduleId) {
         Horario horario = jpaRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
