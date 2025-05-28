@@ -1,4 +1,4 @@
-package com.tutorias.domain.model;
+package com.tutorias.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Availability {
-    private int availabilityId;
+public class CreateAvailabilityDTO {
     private int classroomId;
     private String dayOfWeek;
     private LocalTime startTime;
