@@ -18,5 +18,4 @@ public class Subject {
     private String subjectName;
 //    private Boolean isDeleted;
     private Career career;
-    private List<SubjectUser> subjectUsers;
 }
