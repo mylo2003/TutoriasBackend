@@ -16,5 +16,4 @@ public class Subject {
     private int subjectId;
     private String subjectName;
     private Career career;
-    private List<SubjectUser> subjectUsers;
 }

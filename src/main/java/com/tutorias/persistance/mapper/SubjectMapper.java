@@ -9,19 +9,20 @@ import org.mapstruct.Mappings;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {CareerMapper.class})
+@Mapper(componentModel = "spring", uses = {CareerMapper.class, UserMapper.class})
 public interface SubjectMapper {
     @Mappings({
             @Mapping(source = "idMateria", target = "subjectId"),
             @Mapping(source = "nombreMateria", target = "subjectName"),
             @Mapping(source = "carrera", target = "career"),
-            @Mapping(source = "materiaUsuarios", target = "subjectUsers")
+            //@Mapping(source = "materiaUsuarios", target = "subjectUsers")
     })
     Subject toSubject(Materia materia);
     List<Subject> toSubjects(List<Materia> materias);
 
     @InheritInverseConfiguration
     @Mapping(target = "idCarrera", ignore = true)
+    @Mapping(target = "materiaUsuarios", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
     Materia toMateria(Subject subject);
 }
