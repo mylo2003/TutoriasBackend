@@ -12,4 +12,5 @@ public interface BookingRepository {
     void create(CreateBookingDTO booking);
     void update(int bookingId, CreateBookingDTO booking);
     void delete(int bookingId);
+    void rating(int bookingId, int rating);
 }

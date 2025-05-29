@@ -12,4 +12,5 @@ public interface ScheduleRepository {
     void create(CreateScheduleDTO schedule);
     void update(int scheduleId, CreateScheduleDTO schedule);
     void delete(int scheduleId);
+    void updateMode(int scheduleId, String mode);
 }

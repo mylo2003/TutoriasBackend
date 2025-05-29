@@ -84,4 +84,16 @@ public class ScheduleController {
             );
         }
     }
+
+    @PutMapping("/{idHorario}/{modo}")
+    public ResponseEntity<?> updateModeSchedule(@PathVariable int idHorario, @PathVariable String modo) {
+        try {
+            scheduleService.updateMode(idHorario, modo);
+            return ResponseEntity.status(HttpStatus.OK).body("Modo de horario actualizado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

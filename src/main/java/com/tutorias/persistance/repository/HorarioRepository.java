@@ -119,4 +119,13 @@ public class HorarioRepository implements ScheduleRepository {
         horario.setDeletedAt(LocalDateTime.now());
         jpaRepository.save(horario);
     }
+
+    @Override
+    public void updateMode(int scheduleId, String mode) {
+        Horario horario = jpaRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        horario.setModo(mode);
+        jpaRepository.save(horario);
+    }
 }

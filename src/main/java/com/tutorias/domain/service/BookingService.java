@@ -33,4 +33,8 @@ public class BookingService {
     public void deleteBooking(int bookingId) {
         bookingRepository.delete(bookingId);
     }
+
+    public void updateRating(int bookingId, int rating) {
+        bookingRepository.rating(bookingId, rating);
+    }
 }

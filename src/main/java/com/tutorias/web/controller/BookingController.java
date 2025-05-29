@@ -84,4 +84,16 @@ public class BookingController {
             );
         }
     }
+
+    @PutMapping("/{idAgendacion}/{calificacion}")
+    public ResponseEntity<?> updateModeSchedule(@PathVariable int idAgendacion, @PathVariable int calificacion) {
+        try {
+            bookingService.updateRating(idAgendacion, calificacion);
+            return ResponseEntity.status(HttpStatus.OK).body("Calificación otorgada exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

@@ -33,4 +33,8 @@ public class ScheduleService {
     public void deleteSchedule(int scheduleId) {
         scheduleRepository.delete(scheduleId);
     }
+
+    public void updateMode(int scheduleId, String mode) {
+        scheduleRepository.updateMode(scheduleId, mode);
+    }
 }
