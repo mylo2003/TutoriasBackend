@@ -1,5 +1,6 @@
 package com.tutorias.persistance.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,8 @@ public class Usuario {
     private String nombre;
 
     private String apellido;
+
+    private String usuario;
 
     @Column(nullable = false, unique = true, length = 100)
     private String correo;

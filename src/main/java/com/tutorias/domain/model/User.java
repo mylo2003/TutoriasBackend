@@ -19,6 +19,7 @@ public class User {
 //    private int roleId;
     private String name;
     private String lastName;
+    private String username;
     private String email;
     private int semester;
     private Double averageRating;

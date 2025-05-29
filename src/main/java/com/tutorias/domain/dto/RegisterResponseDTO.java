@@ -1,4 +1,4 @@
-package com.tutorias.domain.model;
+package com.tutorias.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Subject {
-    private int subjectId;
-    private String subjectName;
-    private Career career;
+public class RegisterResponseDTO {
+    private String message;
+    private Integer userID;
+    private String user;
 }
