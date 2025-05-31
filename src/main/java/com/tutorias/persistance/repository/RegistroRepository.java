@@ -59,7 +59,7 @@ public class RegistroRepository implements RegisterRepository {
         nuevoUsuario.setUsuario(registerDTO.getUser());
         nuevoUsuario.setContrasenia(passwordEncoder.encode(registerDTO.getPassword())); // Encriptar contraseña
         nuevoUsuario.setCorreo(registerDTO.getEmail());
-        nuevoUsuario.setSemestre(registerDTO.getRoleID());
+        nuevoUsuario.setSemestre(registerDTO.getSemester());
         nuevoUsuario.setValoracionPromedio(0.0);
         nuevoUsuario.setIsDeleted(false);
 
