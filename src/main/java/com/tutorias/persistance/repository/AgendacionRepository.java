@@ -80,7 +80,7 @@ public class AgendacionRepository implements BookingRepository {
         Agendado agendado = jpaRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));
 
-        agendado.setIdDeleted(true);
+        agendado.setFinalizado(true);
         agendado.setDeletedAt(LocalDateTime.now());
         jpaRepository.save(agendado);
     }

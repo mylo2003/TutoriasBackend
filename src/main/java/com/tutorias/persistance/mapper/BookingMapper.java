@@ -16,6 +16,7 @@ public interface BookingMapper {
             @Mapping(source = "usuario.idUsuario", target = "userId"),
             @Mapping(source = "horario.idHorario", target = "scheduleId"),
             @Mapping(source = "horaAgendado", target = "scheduleDateTime"),
+            @Mapping(source = "finalizado", target = "finished"),
             @Mapping(source = "calificacion", target = "rating")
     })
     Booking toBooking(Agendado agendado);
@@ -25,7 +26,6 @@ public interface BookingMapper {
     @InheritInverseConfiguration
     @Mapping(target = "usuario", ignore = true)
     @Mapping(target = "horario", ignore = true)
-    @Mapping(target = "idDeleted", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
     Agendado toAgendado(Booking booking);
 }
