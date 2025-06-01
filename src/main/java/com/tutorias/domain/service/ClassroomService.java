@@ -4,6 +4,8 @@ import com.tutorias.domain.dto.CreateClassroomDTO;
 import com.tutorias.domain.model.Classroom;
 import com.tutorias.domain.repository.ClassroomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,10 @@ public class ClassroomService {
 
     public Optional<Classroom> getById(int classroomId) {
         return classroomRepository.getById(classroomId);
+    }
+
+    public Page<Classroom> getByBlockId(int blockId, Pageable pageable) {
+        return classroomRepository.getByBlockId(blockId, pageable);
     }
 
     public void createClassroom(CreateClassroomDTO classroom) {

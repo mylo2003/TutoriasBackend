@@ -9,6 +9,8 @@ import com.tutorias.persistance.entity.Bloque;
 import com.tutorias.persistance.entity.Salon;
 import com.tutorias.persistance.mapper.ClassroomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -33,6 +35,12 @@ public class SalonRepository implements ClassroomRepository {
     public Optional<Classroom> getById(int classroomId) {
         return jpaRepository.findById(classroomId)
                 .map(mapper::toClassroom);
+    }
+
+    @Override
+    public Page<Classroom> getByBlockId(Integer blockId, Pageable pageable) {
+        Page<Salon> salones = jpaRepository.findAllByBloque_IdBloque(blockId, pageable);
+        return salones.map(mapper::toClassroom);
     }
 
     @Override
