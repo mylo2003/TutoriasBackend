@@ -3,10 +3,9 @@ package com.tutorias.config;
 import com.tutorias.domain.model.Booking;
 import com.tutorias.domain.repository.BookingRepository;
 import com.tutorias.domain.service.SseService;
-import com.tutorias.persistance.crud.AgendacionCrudRepository;
-import com.tutorias.persistance.entity.Agendado;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +22,7 @@ public class ReminderScheduler {
     @Autowired
     private SseService sseService;
 
+    @Async("notificacionExecutor")
     @Scheduled(fixedRate = 60000)
     public void notificarTutoriasProximas() {
         System.out.println("Ejecutando scheduler de recordatorios");

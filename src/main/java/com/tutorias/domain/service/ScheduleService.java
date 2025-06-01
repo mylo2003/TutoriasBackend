@@ -3,26 +3,22 @@ package com.tutorias.domain.service;
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
-import com.tutorias.persistance.crud.HorarioCrudRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
     @Autowired
-    private HorarioCrudRepository horarioCrudRepository;
+    private AutomataEstado automataEstado;
 
     public List<Schedule> getAll() {
         return scheduleRepository.getAll();
@@ -48,123 +44,27 @@ public class ScheduleService {
         scheduleRepository.updateMode(scheduleId, mode);
     }
 
+    @Async("estadoExecutor")
     @Transactional
     @Scheduled(fixedRate = 60000)
     public void actualizarModosDeHorarios() {
         List<Schedule> schedules = scheduleRepository.findAllByIsDeletedFalse();
-
         LocalDateTime ahora = LocalDateTime.now().withSecond(0).withNano(0);
-        LocalDate hoy = ahora.toLocalDate();
-        LocalTime horaActual = ahora.toLocalTime();
 
         for (Schedule schedule : schedules) {
-            LocalDate fechaSchedule = schedule.getScheduleDate().toLocalDate();
-            LocalTime horaInicio = schedule.getStartTime();
-            LocalTime horaFin = schedule.getEndTime();
+            if ("FINALIZADO".equals(schedule.getMode())) continue;
 
-            String modoActual = schedule.getMode();
-            String nuevoModo = determinarModoCorrect(fechaSchedule, horaInicio, horaFin, hoy, horaActual);
+            EstadoAsesoria nuevoModo = automataEstado.transitar(
+                    ahora,
+                    schedule.getScheduleDate().toLocalDate(),
+                    schedule.getStartTime(),
+                    schedule.getEndTime()
+            );
 
-            if (!nuevoModo.equals(modoActual) && !"FINALIZADO".equals(modoActual)) {
-                scheduleRepository.updateMode(schedule.getScheduleId(), nuevoModo);
-
-                System.out.println("Schedule ID " + schedule.getScheduleId() +
-                        " actualizado de '" + modoActual + "' a '" + nuevoModo + "'");
+            if (!nuevoModo.name().equals(schedule.getMode())) {
+                scheduleRepository.updateMode(schedule.getScheduleId(), nuevoModo.name());
+                System.out.println("Modo actualizado a: " + nuevoModo.name());
             }
         }
-    }
-
-    private String determinarModoCorrect(LocalDate fechaSchedule, LocalTime horaInicio, LocalTime horaFin,
-                                         LocalDate fechaActual, LocalTime horaActual) {
-
-        if (fechaSchedule.isBefore(fechaActual)) {
-            return "FINALIZADO";
-        }
-
-        if (fechaSchedule.isAfter(fechaActual)) {
-            return "DISPONIBLE";
-        }
-
-        if (fechaSchedule.equals(fechaActual)) {
-            if (horaActual.isBefore(horaInicio)) {
-                return "DISPONIBLE";
-            }
-
-            if (!horaActual.isBefore(horaInicio) && horaActual.isBefore(horaFin)) {
-                return "EN CURSO";
-            }
-
-            if (!horaActual.isBefore(horaFin)) {
-                return "FINALIZADO";
-            }
-        }
-
-        return "DISPONIBLE";
-    }
-
-    @Transactional
-    @Scheduled(fixedRate = 60000)
-    public void actualizarModosDeHorariosCompacto() {
-        List<Schedule> schedules = scheduleRepository.findAllByIsDeletedFalse();
-        LocalDateTime ahora = LocalDateTime.now().withSecond(0).withNano(0);
-
-        schedules.stream()
-                .filter(schedule -> !"FINALIZADO".equals(schedule.getMode())) // No procesar ya finalizados
-                .forEach(schedule -> {
-                    LocalDateTime inicio = LocalDateTime.of(
-                            schedule.getScheduleDate().toLocalDate(),
-                            schedule.getStartTime()
-                    );
-                    LocalDateTime fin = LocalDateTime.of(
-                            schedule.getScheduleDate().toLocalDate(),
-                            schedule.getEndTime()
-                    );
-
-                    String nuevoModo;
-                    if (ahora.isBefore(inicio)) {
-                        nuevoModo = "DISPONIBLE";
-                    } else if (ahora.isBefore(fin)) {
-                        nuevoModo = "EN CURSO";
-                    } else {
-                        nuevoModo = "FINALIZADO";
-                    }
-
-                    // Solo actualizar si es diferente
-                    if (!nuevoModo.equals(schedule.getMode())) {
-                        scheduleRepository.updateMode(schedule.getScheduleId(), nuevoModo);
-                    }
-                });
-    }
-
-    public void actualizarModoSchedule(int scheduleId) {
-        Schedule schedule = scheduleRepository.getById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Schedule no encontrado con ID: " + scheduleId));
-
-        LocalDateTime ahora = LocalDateTime.now().withSecond(0).withNano(0);
-        LocalDate hoy = ahora.toLocalDate();
-        LocalTime horaActual = ahora.toLocalTime();
-
-        LocalDate fechaSchedule = schedule.getScheduleDate().toLocalDate();
-        String nuevoModo = determinarModoCorrect(
-                fechaSchedule,
-                schedule.getStartTime(),
-                schedule.getEndTime(),
-                hoy,
-                horaActual
-        );
-
-        if (!nuevoModo.equals(schedule.getMode())) {
-            scheduleRepository.updateMode(scheduleId, nuevoModo);
-        }
-    }
-
-    public Map<String, Long> obtenerEstadisticasModos() {
-        List<Schedule> schedules = scheduleRepository.findAllByIsDeletedFalse();
-
-        return schedules.stream()
-                .collect(Collectors.groupingBy(
-                        schedule -> schedule.getMode() != null ? schedule.getMode() : "SIN_ESTADO",
-                        Collectors.counting()
-                ));
     }
 }

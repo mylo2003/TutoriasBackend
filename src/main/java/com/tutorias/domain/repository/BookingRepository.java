@@ -2,7 +2,6 @@ package com.tutorias.domain.repository;
 
 import com.tutorias.domain.dto.CreateBookingDTO;
 import com.tutorias.domain.model.Booking;
-import com.tutorias.persistance.entity.Agendado;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

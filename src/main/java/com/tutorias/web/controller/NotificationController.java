@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@RequestMapping("/sse")
+@RequestMapping("/notificacion")
 public class NotificationController {
 
     @Autowired
     private SseService sseService;
 
-    @GetMapping("/subscribe/{userId}")
+    @GetMapping("/conectar/{userId}")
     public SseEmitter subscribe(@PathVariable Integer userId) {
         return sseService.subscribe(userId);
     }
