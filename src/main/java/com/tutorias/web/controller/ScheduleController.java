@@ -1,13 +1,17 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
+import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +53,25 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/filtro")
+    public ResponseEntity<?> filterSchedule(
+            @RequestParam(required = false) Integer subjectId,
+            @RequestParam(required = false) Integer classroomId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) String mode,
+            @RequestParam(required = false) String dayOfWeek,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int elements) {
+
+        Page<Schedule> schedulePage = scheduleService.filterSchedule(
+                subjectId, classroomId, date, mode, dayOfWeek, page, elements);
+
+        String message = schedulePage.isEmpty() ? "No se encontraron horarios." : "Horarios encontrados.";
+        CustomResponse<Page<Schedule>> response = new CustomResponse<>(message, schedulePage);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping
     public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleDTO schedule) {
         try {
@@ -78,18 +101,6 @@ public class ScheduleController {
         try {
             scheduleService.deleteSchedule(idHorario);
             return ResponseEntity.status(HttpStatus.OK).body("Horario eliminado exitosamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Map.of("error", e.getMessage())
-            );
-        }
-    }
-
-    @PutMapping("/{idHorario}/{modo}")
-    public ResponseEntity<?> updateModeSchedule(@PathVariable int idHorario, @PathVariable String modo) {
-        try {
-            scheduleService.updateMode(idHorario, modo);
-            return ResponseEntity.status(HttpStatus.OK).body("Modo de horario actualizado exitosamente");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())

@@ -7,10 +7,12 @@ import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,10 @@ public class ScheduleService {
 
     public Optional<Schedule> getById(int scheduleId) {
         return scheduleRepository.getById(scheduleId);
+    }
+
+    public Page<Schedule> filterSchedule(Integer subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek, int page, int elements) {
+        return scheduleRepository.filterSchedule(subjectId, classroomId, date, mode, dayOfWeek, page, elements);
     }
 
     public void createSchedule(CreateScheduleDTO schedule) {

@@ -86,7 +86,7 @@ public class BookingController {
     }
 
     @PutMapping("/{idAgendacion}/{calificacion}")
-    public ResponseEntity<?> updateModeSchedule(@PathVariable int idAgendacion, @PathVariable int calificacion) {
+    public ResponseEntity<?> updateRating(@PathVariable int idAgendacion, @PathVariable int calificacion) {
         try {
             bookingService.updateRating(idAgendacion, calificacion);
             return ResponseEntity.status(HttpStatus.OK).body("Calificación otorgada exitosamente");
