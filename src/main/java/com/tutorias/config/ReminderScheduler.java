@@ -1,5 +1,7 @@
 package com.tutorias.config;
 
+import com.tutorias.domain.model.Booking;
+import com.tutorias.domain.repository.BookingRepository;
 import com.tutorias.domain.service.SseService;
 import com.tutorias.persistance.crud.AgendacionCrudRepository;
 import com.tutorias.persistance.entity.Agendado;
@@ -9,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -18,8 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReminderScheduler {
     @Autowired
-    private AgendacionCrudRepository bookingRepository;
-
+    private BookingRepository bookingRepository;
     @Autowired
     private SseService sseService;
 
@@ -38,12 +38,12 @@ public class ReminderScheduler {
             LocalTime horaMenos = horaObjetivo.minusSeconds(30);
             LocalTime horaMas = horaObjetivo.plusSeconds(30);
 
-            List<Agendado> agendados = bookingRepository.findBookingsByHoraCercana(
+            List<Booking> bookings = bookingRepository.findBookingsByHoraCercana(
                     fecha, horaMenos, horaMas
             );
 
-            for (Agendado ag : agendados) {
-                Integer userId = ag.getUsuario().getIdUsuario();
+            for (Booking ag : bookings) {
+                Integer userId = ag.getUserId();
                 String mensaje = "📢 Recordatorio: tu tutoría inicia en " + minutosAntes + " minutos.";
                 System.out.println("Preparando notificación para usuario " + userId + ": " + mensaje);
                 sseService.sendEvent(userId, mensaje);
@@ -54,12 +54,12 @@ public class ReminderScheduler {
         LocalTime inicioMenos = ahora.minusSeconds(30);
         LocalTime inicioMas = ahora.plusSeconds(30);
 
-        List<Agendado> agendadosQueEmpiezan = bookingRepository.findBookingsByHoraCercana(
+        List<Booking> agendadosQueEmpiezan = bookingRepository.findBookingsByHoraCercana(
                 fecha, inicioMenos, inicioMas
         );
 
-        for (Agendado ag : agendadosQueEmpiezan) {
-            Integer userId = ag.getUsuario().getIdUsuario();
+        for (Booking ag : agendadosQueEmpiezan) {
+            Integer userId = ag.getUserId();
             String mensaje = "✅ Tu tutoría ha comenzado. ¡Buena suerte!";
             System.out.println("Notificando inicio a usuario " + userId);
             sseService.sendEvent(userId, mensaje);

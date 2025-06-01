@@ -132,6 +132,6 @@ public class HorarioRepository implements ScheduleRepository {
 
     @Override
     public List<Schedule> findAllByIsDeletedFalse() {
-        return mapper.toSchedules(jpaRepository.findAllByIsDeletedFalse());
+        return mapper.toSchedules(jpaRepository.findAllByIsDeletedFalseAndModoNot("FINALIZADO"));
     }
 }

@@ -4,7 +4,6 @@ import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
 import com.tutorias.persistance.crud.HorarioCrudRepository;
-import com.tutorias.persistance.entity.Horario;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -66,12 +65,9 @@ public class ScheduleService {
             String modoActual = schedule.getMode();
             String nuevoModo = determinarModoCorrect(fechaSchedule, horaInicio, horaFin, hoy, horaActual);
 
-            // Solo actualizar si el modo ha cambiado y no está ya FINALIZADO
             if (!nuevoModo.equals(modoActual) && !"FINALIZADO".equals(modoActual)) {
-                // Usar el método del repositorio para actualizar
                 scheduleRepository.updateMode(schedule.getScheduleId(), nuevoModo);
 
-                // Log opcional para seguimiento
                 System.out.println("Schedule ID " + schedule.getScheduleId() +
                         " actualizado de '" + modoActual + "' a '" + nuevoModo + "'");
             }
@@ -81,36 +77,28 @@ public class ScheduleService {
     private String determinarModoCorrect(LocalDate fechaSchedule, LocalTime horaInicio, LocalTime horaFin,
                                          LocalDate fechaActual, LocalTime horaActual) {
 
-        // Si la fecha ya pasó, debe estar FINALIZADO
         if (fechaSchedule.isBefore(fechaActual)) {
             return "FINALIZADO";
         }
 
-        // Si la fecha es futura, debe estar DISPONIBLE
         if (fechaSchedule.isAfter(fechaActual)) {
             return "DISPONIBLE";
         }
 
-        // Si es el día actual, verificar la hora
         if (fechaSchedule.equals(fechaActual)) {
-
-            // Si la hora actual es antes del inicio, está DISPONIBLE
             if (horaActual.isBefore(horaInicio)) {
                 return "DISPONIBLE";
             }
 
-            // Si la hora actual está entre inicio y fin (inclusive), está EN CURSO
             if (!horaActual.isBefore(horaInicio) && horaActual.isBefore(horaFin)) {
                 return "EN CURSO";
             }
 
-            // Si ya pasó la hora fin, está FINALIZADO
             if (!horaActual.isBefore(horaFin)) {
                 return "FINALIZADO";
             }
         }
 
-        // Por defecto, DISPONIBLE
         return "DISPONIBLE";
     }
 

@@ -9,7 +9,9 @@ import com.tutorias.persistance.mapper.BookingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -93,5 +95,10 @@ public class AgendacionRepository implements BookingRepository {
 
         agendado.setCalificacion(calificacion);
         jpaRepository.save(agendado);
+    }
+
+    @Override
+    public List<Booking> findBookingsByHoraCercana(LocalDate fecha, LocalTime horaMenos, LocalTime horaMas) {
+        return mapper.toBookings(jpaRepository.findBookingsByHoraCercana(fecha, horaMenos, horaMas));
     }
 }

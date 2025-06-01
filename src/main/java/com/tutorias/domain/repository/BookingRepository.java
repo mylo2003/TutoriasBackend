@@ -2,7 +2,10 @@ package com.tutorias.domain.repository;
 
 import com.tutorias.domain.dto.CreateBookingDTO;
 import com.tutorias.domain.model.Booking;
+import com.tutorias.persistance.entity.Agendado;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +16,5 @@ public interface BookingRepository {
     void update(int bookingId, CreateBookingDTO booking);
     void delete(int bookingId);
     void rating(int bookingId, int rating);
+    List<Booking> findBookingsByHoraCercana(LocalDate fecha, LocalTime horaMenos, LocalTime horaMas);
 }
