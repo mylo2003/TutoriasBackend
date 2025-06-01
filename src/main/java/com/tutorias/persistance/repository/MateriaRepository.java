@@ -1,6 +1,7 @@
 package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateSubjectDTO;
+import com.tutorias.domain.dto.SubjectFilter;
 import com.tutorias.domain.model.Career;
 import com.tutorias.domain.model.Subject;
 import com.tutorias.domain.repository.SubjectRepository;
@@ -74,6 +75,11 @@ public class MateriaRepository implements SubjectRepository {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(dtoList, PageRequest.of(page, elements), total);
+    }
+
+    @Override
+    public List<SubjectFilter> filterByCareerId(int careerId) {
+        return jpaRepository.findByCarreraId(careerId);
     }
 
     private List<Predicate> buildSubjectPredicates(CriteriaBuilder cb, Root<Materia> root,

@@ -37,8 +37,4 @@ public class Materia {
 
     @OneToMany(mappedBy = "materia")
     private List<MateriaUsuario> materiaUsuarios;
-
-//    @ManyToMany(mappedBy = "materias", fetch = FetchType.LAZY)
-//    private Set<Usuario> usuarios;
-
 }

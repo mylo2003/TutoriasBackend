@@ -2,6 +2,7 @@ package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateSubjectDTO;
 import com.tutorias.domain.dto.CustomResponse;
+import com.tutorias.domain.dto.SubjectFilter;
 import com.tutorias.domain.model.Subject;
 import com.tutorias.domain.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class SubjectController {
         }
     }
 
-    @GetMapping("/filtro")
+    @GetMapping("/filtroCompleto")
     public ResponseEntity<?> filterSubjects(
             @RequestParam(required = false) String subjectName,
             @RequestParam(required = false) Integer careerId,
@@ -63,6 +64,21 @@ public class SubjectController {
 
         String message = result.isEmpty() ? "No se encontraron materias." : "Materias encontradas.";
         return ResponseEntity.ok(new CustomResponse<>(message, result));
+    }
+
+    @GetMapping("/filtro/carrera/{idCarrera}")
+    public ResponseEntity<List<SubjectFilter>> getSubjectsByIdCarrera(@PathVariable int idCarrera) {
+        try {
+            List<SubjectFilter> subjectList = subjectService.filterByCareerId(idCarrera);
+
+            if (subjectList.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(subjectList);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping
