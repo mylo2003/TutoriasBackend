@@ -1,6 +1,8 @@
 package com.tutorias.domain.service;
 
+import com.tutorias.config.AutomataEstado;
 import com.tutorias.domain.dto.CreateScheduleDTO;
+import com.tutorias.domain.dto.EstadoAsesoria;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.ScheduleRepository;
 import jakarta.transaction.Transactional;
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
+    @Autowired
+    private RatingService ratingService;
     @Autowired
     private AutomataEstado automataEstado;
 
@@ -64,6 +68,10 @@ public class ScheduleService {
             if (!nuevoModo.name().equals(schedule.getMode())) {
                 scheduleRepository.updateMode(schedule.getScheduleId(), nuevoModo.name());
                 System.out.println("Modo actualizado a: " + nuevoModo.name());
+
+                if (nuevoModo == EstadoAsesoria.FINALIZADO) {
+                    ratingService.calcularPromedioConRetraso(schedule);
+                }
             }
         }
     }

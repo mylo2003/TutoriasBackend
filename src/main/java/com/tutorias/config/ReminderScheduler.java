@@ -64,6 +64,24 @@ public class ReminderScheduler {
             System.out.println("Notificando inicio a usuario " + userId);
             sseService.sendEvent(userId, mensaje);
         }
+
+        // Notificar a estudiantes que su tutoría finalizó
+        LocalTime finMenos = ahora.minusSeconds(30);
+        LocalTime finMas = ahora.plusSeconds(30);
+
+        List<Booking> tutoriasFinalizadas = bookingRepository.findBookingsQueFinalizaron(
+                fecha, finMenos, finMas
+        );
+
+        for (Booking ag : tutoriasFinalizadas) {
+            Integer userId = ag.getUserId();
+            String mensaje = "📝 Tu tutoría ha finalizado. Por favor, valórala desde la aplicación.";
+            System.out.println("Notificando finalización a usuario " + userId);
+            sseService.sendEvent(userId, mensaje);
+
+            System.out.println("llamando a modificar notificacion a true");
+            bookingRepository.notifiedRating(ag.getBookingId());
+        }
     }
 }
 

@@ -16,8 +16,9 @@ public interface BookingMapper {
             @Mapping(source = "usuario.idUsuario", target = "userId"),
             @Mapping(source = "horario.idHorario", target = "scheduleId"),
             @Mapping(source = "horaAgendado", target = "scheduleDateTime"),
-            @Mapping(source = "finalizado", target = "finished"),
-            @Mapping(source = "calificacion", target = "rating")
+            @Mapping(source = "calificacion", target = "rating"),
+            @Mapping(source = "notificado", target = "notified"),
+            @Mapping(source = "eliminado", target = "deleted")
     })
     Booking toBooking(Agendado agendado);
 

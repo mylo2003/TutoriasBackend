@@ -1,5 +1,6 @@
-package com.tutorias.domain.service;
+package com.tutorias.config;
 
+import com.tutorias.domain.dto.EstadoAsesoria;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

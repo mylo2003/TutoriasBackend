@@ -13,18 +13,24 @@ import java.util.Optional;
 
 @Repository
 public class UsuarioRepository implements UserRepository{
-
     @Autowired
     private UsuarioCrudRepository usuarioCrudRepository;
-
     @Autowired
     private UserMapper mapper;
 
     @Override
-    public List<User> getAll(){ return mapper.toUsers((List<Usuario>) usuarioCrudRepository.findAll()); }
+    public List<User> getAll(){ return mapper.toUsers(usuarioCrudRepository.findAll()); }
 
     @Override
     public Optional<User> getById(Integer idUser){
         return usuarioCrudRepository.findById(idUser).map(mapper::toUser);
+    }
+
+    @Override
+    public void updateAverage(int tutorId, double average) {
+        Usuario tutor = usuarioCrudRepository.findById(tutorId)
+                .orElseThrow(() -> new RuntimeException("Tutor no encontrado"));
+
+        tutor.setValoracionPromedio(average);
     }
 }

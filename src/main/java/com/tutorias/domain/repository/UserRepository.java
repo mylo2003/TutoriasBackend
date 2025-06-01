@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface UserRepository {
     List<User> getAll();
     Optional<User> getById(Integer idUser);
+    void updateAverage(int tutorId, double average);
 }

@@ -33,8 +33,10 @@ public class Agendado {
 
     private Integer calificacion;
 
+    private Boolean notificado = false;
+
     @Column(name = "is_deleted")
-    private Boolean finalizado = false;
+    private Boolean eliminado = false;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;

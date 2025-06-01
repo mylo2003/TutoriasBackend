@@ -16,4 +16,7 @@ public interface BookingRepository {
     void delete(int bookingId);
     void rating(int bookingId, int rating);
     List<Booking> findBookingsByHoraCercana(LocalDate fecha, LocalTime horaMenos, LocalTime horaMas);
+    List<Booking> findBookingsQueFinalizaron(LocalDate fecha, LocalTime finMenos, LocalTime finMas);
+    List<Booking> findRatings(int userId);
+    void notifiedRating(int bookingId);
 }

@@ -9,11 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class SseService {
-
     private final Map<Integer, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     public SseEmitter subscribe(Integer userId) {
-        SseEmitter emitter = new SseEmitter(0L); // Sin timeout
+        SseEmitter emitter = new SseEmitter(0L);
         emitters.put(userId, emitter);
 
         emitter.onCompletion(() -> emitters.remove(userId));

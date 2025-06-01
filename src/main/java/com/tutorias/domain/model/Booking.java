@@ -17,5 +17,6 @@ public class Booking {
     private int scheduleId;
     private LocalDateTime scheduleDateTime;
     private Integer rating;
-    private boolean finished;
+    private boolean notified;
+    private boolean deleted;
 }

@@ -83,7 +83,7 @@ public class AgendacionRepository implements BookingRepository {
         Agendado agendado = jpaRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));
 
-        agendado.setFinalizado(true);
+        agendado.setEliminado(true);
         agendado.setDeletedAt(LocalDateTime.now());
         jpaRepository.save(agendado);
     }
@@ -94,11 +94,31 @@ public class AgendacionRepository implements BookingRepository {
                 .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));
 
         agendado.setCalificacion(calificacion);
+        agendado.setNotificado(true);
         jpaRepository.save(agendado);
     }
 
     @Override
     public List<Booking> findBookingsByHoraCercana(LocalDate fecha, LocalTime horaMenos, LocalTime horaMas) {
         return mapper.toBookings(jpaRepository.findBookingsByHoraCercana(fecha, horaMenos, horaMas));
+    }
+
+    @Override
+    public List<Booking> findBookingsQueFinalizaron(LocalDate fecha, LocalTime finMenos, LocalTime finMas) {
+        return mapper.toBookings(jpaRepository.findBookingsQueFinalizaron(fecha, finMenos, finMas));
+    }
+
+    @Override
+    public List<Booking> findRatings(int userId) {
+        return mapper.toBookings(jpaRepository.findByHorario_Usuario_IdUsuarioAndCalificacionIsNotNull(userId));
+    }
+
+    @Override
+    public void notifiedRating(int bookingId) {
+        Agendado agendado = jpaRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));
+
+        agendado.setNotificado(true);
+        jpaRepository.save(agendado);
     }
 }
