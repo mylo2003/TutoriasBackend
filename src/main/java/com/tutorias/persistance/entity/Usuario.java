@@ -61,12 +61,4 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario")
     private List<MateriaUsuario> materiaUsuarios;
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "materias_usuarios",
-//            joinColumns = @JoinColumn(name = "id_usuario"),
-//            inverseJoinColumns = @JoinColumn(name = "id_materia")
-//    )
-//    private Set<Materia> materias;
 }

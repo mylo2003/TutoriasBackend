@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,7 @@ public class AgendacionRepository implements BookingRepository {
 
         agendado.setUsuario(usuario);
         agendado.setHorario(horario);
-        agendado.setHoraAgendado(LocalDateTime.now());
+        agendado.setHoraAgendado(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
         jpaRepository.save(agendado);
     }

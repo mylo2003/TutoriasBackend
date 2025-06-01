@@ -117,6 +117,7 @@ public class HorarioRepository implements ScheduleRepository {
 
         horario.setIsDeleted(true);
         horario.setDeletedAt(LocalDateTime.now());
+        horario.setModo("FINALIZADO");
         jpaRepository.save(horario);
     }
 
@@ -127,5 +128,10 @@ public class HorarioRepository implements ScheduleRepository {
 
         horario.setModo(mode);
         jpaRepository.save(horario);
+    }
+
+    @Override
+    public List<Schedule> findAllByIsDeletedFalse() {
+        return mapper.toSchedules(jpaRepository.findAllByIsDeletedFalse());
     }
 }
