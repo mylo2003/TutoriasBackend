@@ -101,8 +101,10 @@ public class ScheduleService {
         }
     }
 
-    public void updateMode(int scheduleId, String mode) {
-        updateOccupied(scheduleId);
+    public void updateMode(int scheduleId, String mode, String type) {
+        if ("PRESENCIAL".equals(type)) {
+            updateOccupied(scheduleId);
+        }
         scheduleRepository.updateMode(scheduleId, mode);
     }
 
@@ -173,7 +175,7 @@ public class ScheduleService {
             );
 
             if (!nuevoModo.name().equals(schedule.getMode())) {
-                updateMode(schedule.getScheduleId(), nuevoModo.name());
+                updateMode(schedule.getScheduleId(), nuevoModo.name(), schedule.getType());
                 System.out.println("Modo actualizado a: " + nuevoModo.name());
 
                 if (nuevoModo == EstadoAsesoria.FINALIZADO) {
