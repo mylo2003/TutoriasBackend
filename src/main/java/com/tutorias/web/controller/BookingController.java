@@ -96,4 +96,19 @@ public class BookingController {
             );
         }
     }
+
+    @GetMapping("/{usuario}/{idUsuario}")
+    public ResponseEntity<List<Booking>> getBookingsByUserId(@PathVariable Integer idUsuario) {
+        try {
+            List<Booking> bookingList = bookingService.getAllByUserId(idUsuario);
+
+            if (bookingList.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(bookingList);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

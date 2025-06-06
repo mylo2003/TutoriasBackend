@@ -16,9 +16,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
@@ -51,14 +48,8 @@ public class DisponibilidadRepository implements AvailabilityRepository {
     }
 
     @Override
-    public Page<Availability> filterAvailability(Integer classroomId, String dayOfWeek, LocalTime startTime, LocalTime endTime, int page, int elements) {
+    public List<Availability> filterAvailability(int classroomId, String dayOfWeek, LocalTime startTime, LocalTime endTime) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Disponibilidad> countRoot = countQuery.from(Disponibilidad.class);
-        List<Predicate> countPredicates = buildPredicates(cb, countRoot, classroomId, dayOfWeek, startTime, endTime);
-        countQuery.select(cb.countDistinct(countRoot)).where(cb.and(countPredicates.toArray(new Predicate[0])));
-        Long total = entityManager.createQuery(countQuery).getSingleResult();
 
         CriteriaQuery<Disponibilidad> query = cb.createQuery(Disponibilidad.class);
         Root<Disponibilidad> root = query.from(Disponibilidad.class);
@@ -66,15 +57,11 @@ public class DisponibilidadRepository implements AvailabilityRepository {
         query.select(root).distinct(true).where(cb.and(predicates.toArray(new Predicate[0])));
 
         TypedQuery<Disponibilidad> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(page * elements);
-        typedQuery.setMaxResults(elements);
-
         List<Disponibilidad> results = typedQuery.getResultList();
-        List<Availability> dtoList = results.stream()
+
+        return results.stream()
                 .map(mapper::toAvailability)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(dtoList, PageRequest.of(page, elements), total);
     }
 
     private List<Predicate> buildPredicates(CriteriaBuilder cb, Root<Disponibilidad> root,
@@ -146,5 +133,13 @@ public class DisponibilidadRepository implements AvailabilityRepository {
                 .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
 
         jpaRepository.deleteById(disponibilidad.getIdDisponibilidad());
+    }
+
+    @Override
+    public void updateOccupied(int availabilityId) {
+        Disponibilidad disponibilidad = jpaRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+
+        disponibilidad.setOcupado(!disponibilidad.getOcupado());
     }
 }

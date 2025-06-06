@@ -2,24 +2,16 @@ package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Schedule;
+import com.tutorias.domain.repository.AvailabilityRepository;
 import com.tutorias.domain.repository.ScheduleRepository;
-import com.tutorias.persistance.crud.HorarioCrudRepository;
-import com.tutorias.persistance.crud.MateriaCrudRepository;
-import com.tutorias.persistance.crud.SalonCrudRepository;
-import com.tutorias.persistance.crud.UsuarioCrudRepository;
-import com.tutorias.persistance.entity.Horario;
-import com.tutorias.persistance.entity.Materia;
-import com.tutorias.persistance.entity.Salon;
-import com.tutorias.persistance.entity.Usuario;
+import com.tutorias.persistance.crud.*;
+import com.tutorias.persistance.entity.*;
 import com.tutorias.persistance.mapper.ScheduleMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -38,11 +30,13 @@ public class HorarioRepository implements ScheduleRepository {
     @Autowired
     private MateriaCrudRepository materiaCrudRepository;
     @Autowired
-    private SalonCrudRepository salonCrudRepository;
+    private DisponibilidadCrudRepository disponibilidadCrudRepository;
     @Autowired
     private ScheduleMapper mapper;
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
 
     @Override
     public List<Schedule> getAll() {
@@ -57,14 +51,8 @@ public class HorarioRepository implements ScheduleRepository {
     }
 
     @Override
-    public Page<Schedule> filterSchedule(Integer subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek, int page, int elements) {
+    public List<Schedule> filterSchedule(Integer subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Horario> countRoot = countQuery.from(Horario.class);
-        List<Predicate> countPredicates = buildHorarioPredicates(cb, countRoot, subjectId, classroomId, date, mode, dayOfWeek);
-        countQuery.select(cb.countDistinct(countRoot)).where(cb.and(countPredicates.toArray(new Predicate[0])));
-        Long total = entityManager.createQuery(countQuery).getSingleResult();
 
         CriteriaQuery<Horario> query = cb.createQuery(Horario.class);
         Root<Horario> root = query.from(Horario.class);
@@ -72,15 +60,11 @@ public class HorarioRepository implements ScheduleRepository {
         query.select(root).distinct(true).where(cb.and(predicates.toArray(new Predicate[0])));
 
         TypedQuery<Horario> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(page * elements);
-        typedQuery.setMaxResults(elements);
-
         List<Horario> resultList = typedQuery.getResultList();
-        List<Schedule> scheduleList = resultList.stream()
+
+        return resultList.stream()
                 .map(mapper::toSchedule)
                 .collect(Collectors.toList());
-
-        return new PageImpl<>(scheduleList, PageRequest.of(page, elements), total);
     }
 
     private List<Predicate> buildHorarioPredicates(CriteriaBuilder cb, Root<Horario> root,
@@ -124,8 +108,8 @@ public class HorarioRepository implements ScheduleRepository {
 
     @Override
     public void create(CreateScheduleDTO schedule) {
-        Salon salon = salonCrudRepository.findById(schedule.getClassroomId())
-                .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
+        Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
+                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
 
         Materia materia = materiaCrudRepository.findById(schedule.getSubjectId())
                 .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
@@ -135,13 +119,15 @@ public class HorarioRepository implements ScheduleRepository {
 
         Horario horario = new Horario();
 
-        horario.setSalon(salon);
+        horario.setSalon(disponibilidad.getSalon());
         horario.setMateria(materia);
         horario.setUsuario(usuario);
         horario.setDescripcion(schedule.getDescription());
         horario.setFechaHorario(schedule.getScheduleDate());
-        horario.setHoraInicio(schedule.getStartTime());
-        horario.setHoraFin(schedule.getEndTime());
+        horario.setHoraInicio(disponibilidad.getHoraInicio());
+        horario.setHoraFin(disponibilidad.getHoraFin());
+
+        availabilityRepository.updateOccupied(schedule.getAvailabilityId());
         horario.setModo("DISPONIBLE");
         jpaRepository.save(horario);
     }
@@ -151,10 +137,13 @@ public class HorarioRepository implements ScheduleRepository {
         Horario horario = jpaRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-        if (schedule.getClassroomId() != 0) {
-            Salon salon = salonCrudRepository.findById(schedule.getClassroomId())
-                    .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
-            horario.setSalon(salon);
+        if (schedule.getAvailabilityId() != 0) {
+            Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
+                    .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+            horario.setSalon(disponibilidad.getSalon());
+            horario.setHoraInicio(disponibilidad.getHoraInicio());
+            horario.setHoraFin(disponibilidad.getHoraFin());
+            availabilityRepository.updateOccupied(schedule.getAvailabilityId());
         }
 
         if (schedule.getSubjectId() != 0) {
@@ -175,14 +164,6 @@ public class HorarioRepository implements ScheduleRepository {
 
         if (schedule.getScheduleDate() != null) {
             horario.setFechaHorario(schedule.getScheduleDate());
-        }
-
-        if (schedule.getStartTime() != null) {
-            horario.setHoraInicio(schedule.getStartTime());
-        }
-
-        if (schedule.getEndTime() != null) {
-            horario.setHoraFin(schedule.getEndTime());
         }
 
         jpaRepository.save(horario);
@@ -211,5 +192,10 @@ public class HorarioRepository implements ScheduleRepository {
     @Override
     public List<Schedule> findAllByIsDeletedFalse() {
         return mapper.toSchedules(jpaRepository.findAllByIsDeletedFalseAndModoNot("FINALIZADO"));
+    }
+
+    @Override
+    public List<Schedule> getAllByUserId(int userId) {
+        return mapper.toSchedules(jpaRepository.findAllByUsuario_IdUsuarioAndIsDeletedFalseAndModoNot(userId, "FINALIZADO"));
     }
 }

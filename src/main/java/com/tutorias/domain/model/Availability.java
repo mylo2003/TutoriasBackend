@@ -12,9 +12,10 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Availability {
-    private int availabilityId;
-    private int classroomId;
+    private Integer availabilityId;
+    private Integer classroomId;
     private String dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
+    private boolean occupied;
 }

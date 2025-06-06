@@ -16,7 +16,6 @@ public interface ClassroomMapper {
             @Mapping(source = "bloque.idBloque", target = "blockId"),
             @Mapping(source = "descripcion", target = "description"),
             @Mapping(source = "ubicacion", target = "location"),
-            @Mapping(source = "horarios", target = "schedules"),
             @Mapping(source = "disponibilidades", target = "availabilities")
     })
     Classroom toClassroom(Salon salon);

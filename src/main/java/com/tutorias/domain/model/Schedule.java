@@ -14,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule {
-    private int scheduleId;
-    private int classroomId;
-    private int subjectId;
-    private int userId;
+    private Integer scheduleId;
+    private Integer classroomId;
+    private Integer subjectId;
+    private Integer userId;
     private String description;
     private LocalDateTime scheduleDate;
     private LocalTime startTime;

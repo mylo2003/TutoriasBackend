@@ -19,4 +19,6 @@ public interface BookingRepository {
     List<Booking> findBookingsQueFinalizaron(LocalDate fecha, LocalTime finMenos, LocalTime finMas);
     List<Booking> findRatings(int userId);
     void notifiedRating(int bookingId);
+    List<Booking> findBookingsByScheduleId(int scheduleId);
+    List<Booking> getAllByUserId(int userId);
 }

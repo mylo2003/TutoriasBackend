@@ -33,4 +33,9 @@ public interface AgendacionCrudRepository extends JpaRepository<Agendado, Intege
     );
 
     List<Agendado> findByHorario_Usuario_IdUsuarioAndCalificacionIsNotNull(Integer idUsuario);
+
+    @Query("SELECT a FROM Agendado a WHERE a.horario.id = :horarioId AND a.eliminado = false")
+    List<Agendado> findAgendadosByHorarioId(@Param("horarioId") Integer horarioId);
+
+    List<Agendado> findAllByUsuario_IdUsuarioAndHorario_ModoNotAndEliminadoFalse(Integer userId, String modo);
 }

@@ -16,7 +16,8 @@ public interface AvailabilityMapper {
             @Mapping(source = "salon.idSalon", target = "classroomId"),
             @Mapping(source = "diaSemana", target = "dayOfWeek"),
             @Mapping(source = "horaInicio", target = "startTime"),
-            @Mapping(source = "horaFin", target = "endTime")
+            @Mapping(source = "horaFin", target = "endTime"),
+            @Mapping(source = "ocupado", target = "occupied")
     })
     Availability toAvailability(Disponibilidad disponibilidad);
 

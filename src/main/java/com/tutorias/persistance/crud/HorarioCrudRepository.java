@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface HorarioCrudRepository extends JpaRepository<Horario, Integer> {
     List<Horario> findAllByIsDeletedFalseAndModoNot(String modo);
+    List<Horario> findAllByUsuario_IdUsuarioAndIsDeletedFalseAndModoNot(Integer userId, String modo);
 }

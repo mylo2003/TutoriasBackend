@@ -1,11 +1,9 @@
 package com.tutorias.domain.service;
 
 import com.tutorias.domain.dto.CreateAvailabilityDTO;
-import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.repository.AvailabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -25,8 +23,8 @@ public class AvailabilityService {
         return availabilityRepository.getById(availabilityId);
     }
 
-    public Page<Availability> filterAvailability(Integer classroomId, String dayOfWeek, LocalTime startTime, LocalTime endTime, int page, int elements) {
-        return availabilityRepository.filterAvailability(classroomId, dayOfWeek, startTime, endTime, page, elements);
+    public List<Availability> filterAvailability(Integer classroomId, String dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        return availabilityRepository.filterAvailability(classroomId, dayOfWeek, startTime, endTime);
     }
 
     public void createAvailability(CreateAvailabilityDTO availability) {

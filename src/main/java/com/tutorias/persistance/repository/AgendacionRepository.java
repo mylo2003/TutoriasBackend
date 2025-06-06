@@ -121,4 +121,14 @@ public class AgendacionRepository implements BookingRepository {
         agendado.setNotificado(true);
         jpaRepository.save(agendado);
     }
+
+    @Override
+    public List<Booking> findBookingsByScheduleId(int scheduleId) {
+        return mapper.toBookings(jpaRepository.findAgendadosByHorarioId(scheduleId));
+    }
+
+    @Override
+    public List<Booking> getAllByUserId(int userId) {
+        return mapper.toBookings(jpaRepository.findAllByUsuario_IdUsuarioAndHorario_ModoNotAndEliminadoFalse(userId, "FINALIZADO"));
+    }
 }

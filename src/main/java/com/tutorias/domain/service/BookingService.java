@@ -37,4 +37,8 @@ public class BookingService {
     public void updateRating(int bookingId, int rating) {
         bookingRepository.rating(bookingId, rating);
     }
+
+    public List<Booking> getAllByUserId(int userId) {
+        return bookingRepository.getAllByUserId(userId);
+    }
 }

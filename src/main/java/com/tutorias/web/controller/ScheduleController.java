@@ -5,7 +5,6 @@ import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,15 +58,13 @@ public class ScheduleController {
             @RequestParam(required = false) Integer classroomId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String mode,
-            @RequestParam(required = false) String dayOfWeek,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int elements) {
+            @RequestParam(required = false) String dayOfWeek) {
 
-        Page<Schedule> schedulePage = scheduleService.filterSchedule(
-                subjectId, classroomId, date, mode, dayOfWeek, page, elements);
+        List<Schedule> schedulePage = scheduleService.filterSchedule(
+                subjectId, classroomId, date, mode, dayOfWeek);
 
         String message = schedulePage.isEmpty() ? "No se encontraron horarios." : "Horarios encontrados.";
-        CustomResponse<Page<Schedule>> response = new CustomResponse<>(message, schedulePage);
+        CustomResponse<List<Schedule>> response = new CustomResponse<>(message, schedulePage);
 
         return ResponseEntity.ok(response);
     }
@@ -105,6 +102,21 @@ public class ScheduleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())
             );
+        }
+    }
+
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Schedule>> getSchedulesByUserId(@PathVariable int idUsuario) {
+        try {
+            List<Schedule> scheduleList = scheduleService.getAllByUserId(idUsuario);
+
+            if (scheduleList.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+
+            return ResponseEntity.ok(scheduleList);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

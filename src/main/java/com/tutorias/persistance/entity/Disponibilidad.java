@@ -32,4 +32,7 @@ public class Disponibilidad {
 
     @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
+
+    @Column(name = "ocupado", nullable = false)
+    private Boolean ocupado = false;
 }

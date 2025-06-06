@@ -1,12 +1,10 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateAvailabilityDTO;
-import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,15 +57,13 @@ public class AvailabilityController {
             @RequestParam(required = false) Integer classroomId,
             @RequestParam(required = false) String dayOfWeek,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int elements) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime endTime) {
 
-        Page<Availability> availabilityPage = availabilityService.filterAvailability(
-                classroomId, dayOfWeek, startTime, endTime, page, elements);
+        List<Availability> availabilityPage = availabilityService.filterAvailability(
+                classroomId, dayOfWeek, startTime, endTime);
 
         String message = availabilityPage.isEmpty() ? "No se encontraron disponibilidades." : "Disponibilidades encontradas.";
-        CustomResponse<Page<Availability>> response = new CustomResponse<>(message, availabilityPage);
+        CustomResponse<List<Availability>> response = new CustomResponse<>(message, availabilityPage);
 
         return ResponseEntity.ok(response);
     }

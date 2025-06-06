@@ -16,6 +16,5 @@ public class Classroom {
     private int blockId;
     private String description;
     private String location;
-    private List<Schedule> schedules;
     private List<Availability> availabilities;
 }
