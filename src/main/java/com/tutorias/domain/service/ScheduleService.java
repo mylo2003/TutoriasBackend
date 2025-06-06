@@ -61,7 +61,9 @@ public class ScheduleService {
         Schedule horarioAnterior = scheduleRepository.getById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-        updateOccupied(horarioAnterior.getScheduleId());
+        if ("PRESENCIAL".equals(horarioAnterior.getType())) {
+            updateOccupied(horarioAnterior.getScheduleId());
+        }
 
         List<Booking> bookingsAfectados = bookingRepository.findBookingsByScheduleId(scheduleId);
 
@@ -101,16 +103,18 @@ public class ScheduleService {
         }
     }
 
-    public void updateMode(int scheduleId, String mode, String type) {
-        if ("PRESENCIAL".equals(type)) {
-            updateOccupied(scheduleId);
-        }
+    public void updateMode(int scheduleId, String mode) {
+        updateOccupied(scheduleId);
         scheduleRepository.updateMode(scheduleId, mode);
     }
 
     private void updateOccupied(int scheduleId) {
         Schedule horarioAnterior = scheduleRepository.getById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
+
+        if (!"PRESENCIAL".equalsIgnoreCase(horarioAnterior.getType())) {
+            return;
+        }
 
         String diaSemanaEsp = traducirDiaADiaEspanol(horarioAnterior.getScheduleDate().getDayOfWeek());
 
@@ -120,6 +124,12 @@ public class ScheduleService {
                 horarioAnterior.getStartTime(),
                 horarioAnterior.getEndTime()
         );
+
+        if (disponibilidadesAnteriores.isEmpty()) {
+            System.out.println("No se encontró disponibilidad para el horario PRESENCIAL con ID: " + scheduleId);
+            return;
+        }
+
         availabilityRepository.updateOccupied(disponibilidadesAnteriores.getFirst().getAvailabilityId());
     }
 
@@ -175,7 +185,7 @@ public class ScheduleService {
             );
 
             if (!nuevoModo.name().equals(schedule.getMode())) {
-                updateMode(schedule.getScheduleId(), nuevoModo.name(), schedule.getType());
+                updateMode(schedule.getScheduleId(), nuevoModo.name());
                 System.out.println("Modo actualizado a: " + nuevoModo.name());
 
                 if (nuevoModo == EstadoAsesoria.FINALIZADO) {
