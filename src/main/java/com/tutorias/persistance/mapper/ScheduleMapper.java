@@ -21,6 +21,7 @@ public interface ScheduleMapper {
             @Mapping(source = "horaInicio", target = "startTime"),
             @Mapping(source = "horaFin", target = "endTime"),
             @Mapping(source = "modo", target = "mode"),
+            @Mapping(source = "tipo", target = "type"),
             @Mapping(source = "agendados", target = "bookings")
     })
     Schedule toSchedule(Horario horario);

@@ -30,6 +30,8 @@ public class HorarioRepository implements ScheduleRepository {
     @Autowired
     private MateriaCrudRepository materiaCrudRepository;
     @Autowired
+    private SalonCrudRepository salonCrudRepository;
+    @Autowired
     private DisponibilidadCrudRepository disponibilidadCrudRepository;
     @Autowired
     private ScheduleMapper mapper;
@@ -108,9 +110,6 @@ public class HorarioRepository implements ScheduleRepository {
 
     @Override
     public void create(CreateScheduleDTO schedule) {
-        Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
-                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
-
         Materia materia = materiaCrudRepository.findById(schedule.getSubjectId())
                 .orElseThrow(() -> new RuntimeException("Materia no encontrada"));
 
@@ -119,16 +118,32 @@ public class HorarioRepository implements ScheduleRepository {
 
         Horario horario = new Horario();
 
-        horario.setSalon(disponibilidad.getSalon());
         horario.setMateria(materia);
         horario.setUsuario(usuario);
         horario.setDescripcion(schedule.getDescription());
         horario.setFechaHorario(schedule.getScheduleDate());
-        horario.setHoraInicio(disponibilidad.getHoraInicio());
-        horario.setHoraFin(disponibilidad.getHoraFin());
-
-        availabilityRepository.updateOccupied(schedule.getAvailabilityId());
         horario.setModo("DISPONIBLE");
+        horario.setTipo(schedule.getType());
+
+        if ("PRESENCIAL".equalsIgnoreCase(schedule.getType())) {
+            Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
+                    .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+
+            horario.setSalon(disponibilidad.getSalon());
+            horario.setHoraInicio(disponibilidad.getHoraInicio());
+            horario.setHoraFin(disponibilidad.getHoraFin());
+            availabilityRepository.updateOccupied(schedule.getAvailabilityId());
+
+        } else if ("VIRTUAL".equalsIgnoreCase(schedule.getType())) {
+            Salon salon = salonCrudRepository.findById(0)
+                    .orElseThrow(() -> new RuntimeException("Salon no encontrado"));
+            horario.setSalon(salon);
+            horario.setHoraInicio(schedule.getStartTime());
+            horario.setHoraFin(schedule.getEndTime());
+        } else {
+            throw new RuntimeException("Tipo de asesoría no válido");
+        }
+
         jpaRepository.save(horario);
     }
 
@@ -137,13 +152,30 @@ public class HorarioRepository implements ScheduleRepository {
         Horario horario = jpaRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-        if (schedule.getAvailabilityId() != 0) {
-            Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
-                    .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
-            horario.setSalon(disponibilidad.getSalon());
-            horario.setHoraInicio(disponibilidad.getHoraInicio());
-            horario.setHoraFin(disponibilidad.getHoraFin());
-            availabilityRepository.updateOccupied(schedule.getAvailabilityId());
+        if (schedule.getType() != null) {
+            horario.setTipo(schedule.getType().toUpperCase());
+            if ("PRESENCIAL".equalsIgnoreCase(schedule.getType())) {
+                if (schedule.getAvailabilityId() != 0) {
+                    Disponibilidad disponibilidad = disponibilidadCrudRepository.findById(schedule.getAvailabilityId())
+                            .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
+                    horario.setSalon(disponibilidad.getSalon());
+                    horario.setHoraInicio(disponibilidad.getHoraInicio());
+                    horario.setHoraFin(disponibilidad.getHoraFin());
+                    availabilityRepository.updateOccupied(schedule.getAvailabilityId());
+                }
+            } else if ("VIRTUAL".equalsIgnoreCase(schedule.getType())) {
+                Salon salon = salonCrudRepository.findById(0)
+                        .orElseThrow(() -> new RuntimeException("Salon virtual no encontrado"));
+                horario.setSalon(salon);
+                if (schedule.getStartTime() != null) {
+                    horario.setHoraInicio(schedule.getStartTime());
+                }
+                if (schedule.getEndTime() != null) {
+                    horario.setHoraFin(schedule.getEndTime());
+                }
+            } else {
+                throw new RuntimeException("Tipo de asesoría no válido");
+            }
         }
 
         if (schedule.getSubjectId() != 0) {

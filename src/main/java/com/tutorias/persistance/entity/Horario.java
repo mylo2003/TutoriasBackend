@@ -49,6 +49,9 @@ public class Horario {
     @Column(name = "modo", length = 20)
     private String modo;
 
+    @Column(name = "tipo", length = 20)
+    private String tipo;
+
     @Column(name = "is_deleted")
     @Builder.Default
     private Boolean isDeleted = false;

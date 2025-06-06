@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -17,4 +18,7 @@ public class CreateScheduleDTO {
     private int userId;
     private String description;
     private LocalDateTime scheduleDate;
+    private String type;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }

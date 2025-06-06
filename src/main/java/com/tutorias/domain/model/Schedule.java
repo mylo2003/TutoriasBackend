@@ -23,5 +23,6 @@ public class Schedule {
     private LocalTime startTime;
     private LocalTime endTime;
     private String mode;
+    private String type;
     private List<Booking> bookings;
 }
