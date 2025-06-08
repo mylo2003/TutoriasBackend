@@ -14,6 +14,7 @@ public interface SubjectMapper {
     @Mappings({
             @Mapping(source = "idMateria", target = "subjectId"),
             @Mapping(source = "nombreMateria", target = "subjectName"),
+            @Mapping(source = "idCarrera", target = "careerId"),
             @Mapping(source = "carrera", target = "career"),
             //@Mapping(source = "materiaUsuarios", target = "subjectUsers")
     })
@@ -21,7 +22,6 @@ public interface SubjectMapper {
     List<Subject> toSubjects(List<Materia> materias);
 
     @InheritInverseConfiguration
-    @Mapping(target = "idCarrera", ignore = true)
     @Mapping(target = "materiaUsuarios", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
     Materia toMateria(Subject subject);
