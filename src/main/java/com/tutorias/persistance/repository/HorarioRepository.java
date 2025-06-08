@@ -1,6 +1,7 @@
 package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.AvailabilityRepository;
 import com.tutorias.domain.repository.ScheduleRepository;
@@ -227,7 +228,7 @@ public class HorarioRepository implements ScheduleRepository {
     }
 
     @Override
-    public List<Schedule> getAllByUserId(int userId) {
-        return mapper.toSchedules(jpaRepository.findAllByUsuario_IdUsuarioAndIsDeletedFalseAndModoNot(userId, "FINALIZADO"));
+    public List<ResponseScheduleDTO> getAllByUserId(int userId) {
+        return jpaRepository.findAllByUsuario_IdUsuarioAndIsDeletedFalseAndModoNot(userId, "FINALIZADO");
     }
 }

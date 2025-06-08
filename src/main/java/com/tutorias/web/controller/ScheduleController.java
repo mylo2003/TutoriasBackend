@@ -2,6 +2,7 @@ package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.CustomResponse;
+import com.tutorias.domain.dto.ResponseScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,9 +107,9 @@ public class ScheduleController {
     }
 
     @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<Schedule>> getSchedulesByUserId(@PathVariable int idUsuario) {
+    public ResponseEntity<List<ResponseScheduleDTO>> getSchedulesByUserId(@PathVariable int idUsuario) {
         try {
-            List<Schedule> scheduleList = scheduleService.getAllByUserId(idUsuario);
+            List<ResponseScheduleDTO> scheduleList = scheduleService.getAllByUserId(idUsuario);
 
             if (scheduleList.isEmpty()) {
                 return ResponseEntity.noContent().build();

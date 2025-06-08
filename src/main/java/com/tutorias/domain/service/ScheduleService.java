@@ -3,6 +3,7 @@ package com.tutorias.domain.service;
 import com.tutorias.config.AutomataEstado;
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.EstadoAsesoria;
+import com.tutorias.domain.dto.ResponseScheduleDTO;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.model.Booking;
 import com.tutorias.domain.model.Schedule;
@@ -195,7 +196,7 @@ public class ScheduleService {
         }
     }
 
-    public List<Schedule> getAllByUserId(int userId) {
+    public List<ResponseScheduleDTO> getAllByUserId(int userId) {
         return scheduleRepository.getAllByUserId(userId);
     }
 }

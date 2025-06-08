@@ -1,6 +1,7 @@
 package com.tutorias.domain.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleDTO;
 import com.tutorias.domain.model.Schedule;
 
 import java.time.LocalDate;
@@ -16,5 +17,5 @@ public interface ScheduleRepository {
     void delete(int scheduleId);
     void updateMode(int scheduleId, String mode);
     List<Schedule> findAllByIsDeletedFalse();
-    List<Schedule> getAllByUserId(int userId);
+    List<ResponseScheduleDTO> getAllByUserId(int userId);
 }
