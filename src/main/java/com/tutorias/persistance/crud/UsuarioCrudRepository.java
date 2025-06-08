@@ -9,4 +9,6 @@ public interface UsuarioCrudRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByUsuario(String usuario);
     boolean existsByUsuario(String usuario);
     boolean existsByCorreo(String correo);
+    boolean existsByUsuarioAndIdUsuarioNot(String newUsername, Integer idUser);
+    boolean existsByCorreoAndIdUsuarioNot(String newEmail, Integer idUser);
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Subject {
     private int subjectId;
+    private int careerId;
     private String subjectName;
     private Career career;
 }
