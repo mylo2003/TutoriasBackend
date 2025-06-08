@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubjectUser {
-//    private Integer userId;
     private Integer subjectId;
-//    private User user;
-    private Subject subject;
+    private String subjectName;
 }
