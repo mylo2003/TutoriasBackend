@@ -34,8 +34,8 @@ public interface ResponseScheduleDTO {
         String getNombreMateria();
     }
 
-    interface AgendadoInfo {
-        Integer getId(); // ejemplo
+   interface AgendadoInfo {
+        Integer getIdAgendado();
     }
 }
 
