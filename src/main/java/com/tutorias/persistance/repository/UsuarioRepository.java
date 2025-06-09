@@ -107,4 +107,9 @@ public class UsuarioRepository implements UserRepository{
     public boolean existsByEmailAndNotId(String email, Integer idUser){
         return usuarioCrudRepository.existsByCorreoAndIdUsuarioNot(email, idUser);
     }
+
+    @Override
+    public List<User> findProfesoresByMateriaIds(List<Integer> subjectIds, Integer rolId) {
+        return mapper.toUsers(usuarioCrudRepository.findProfesoresByMateriaIds(subjectIds, rolId));
+    }
 }

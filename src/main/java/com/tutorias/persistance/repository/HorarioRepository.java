@@ -2,16 +2,19 @@ package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.AvailabilityRepository;
 import com.tutorias.domain.repository.ScheduleRepository;
 import com.tutorias.persistance.crud.*;
 import com.tutorias.persistance.entity.*;
 import com.tutorias.persistance.mapper.ScheduleMapper;
+import com.tutorias.persistance.mapper.ScheduleResponseMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -36,6 +39,8 @@ public class HorarioRepository implements ScheduleRepository {
     private DisponibilidadCrudRepository disponibilidadCrudRepository;
     @Autowired
     private ScheduleMapper mapper;
+    @Autowired
+    private ScheduleResponseMapper mapperDTO;
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
@@ -54,31 +59,31 @@ public class HorarioRepository implements ScheduleRepository {
     }
 
     @Override
-    public List<Schedule> filterSchedule(Integer subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
+    public List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectIds, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<Horario> query = cb.createQuery(Horario.class);
         Root<Horario> root = query.from(Horario.class);
-        List<Predicate> predicates = buildHorarioPredicates(cb, root, subjectId, classroomId, date, mode, dayOfWeek);
+        List<Predicate> predicates = buildHorarioPredicates(cb, root, subjectIds, classroomId, date, mode, dayOfWeek);
         query.select(root).distinct(true).where(cb.and(predicates.toArray(new Predicate[0])));
 
         TypedQuery<Horario> typedQuery = entityManager.createQuery(query);
         List<Horario> resultList = typedQuery.getResultList();
 
         return resultList.stream()
-                .map(mapper::toSchedule)
+                .map(mapperDTO::toResponseScheduleDTO)
                 .collect(Collectors.toList());
     }
 
     private List<Predicate> buildHorarioPredicates(CriteriaBuilder cb, Root<Horario> root,
-                                                   Integer subjectId, Integer classroomId,
+                                                   List<Integer> subjectIds, Integer classroomId,
                                                    LocalDate date, String mode, String dayOfWeek) {
         List<Predicate> predicates = new ArrayList<>();
 
         predicates.add(cb.isFalse(root.get("isDeleted")));
 
-        if (subjectId != null) {
-            predicates.add(cb.equal(root.get("materia").get("idMateria"), subjectId));
+        if (subjectIds != null && !subjectIds.isEmpty()) {
+            predicates.add(root.get("materia").get("idMateria").in(subjectIds));
         }
 
         if (classroomId != null) {

@@ -89,4 +89,16 @@ public class UserController {
             );
         }
     }
+
+    @GetMapping("/profesores-compatibles/{idEstudiante}")
+    public ResponseEntity<List<User>> obtenerProfesoresCompatibles(@PathVariable Integer idEstudiante) {
+
+        List<User> profesores = userService.profesoresConMateriasDelEstudiante(idEstudiante);
+
+        if (profesores.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(profesores);
+    }
 }

@@ -4,6 +4,7 @@ import com.tutorias.config.AutomataEstado;
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.EstadoAsesoria;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.model.Booking;
 import com.tutorias.domain.model.Schedule;
@@ -45,7 +46,7 @@ public class ScheduleService {
         return scheduleRepository.getById(scheduleId);
     }
 
-    public List<Schedule> filterSchedule(Integer subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
+    public List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
         return scheduleRepository.filterSchedule(subjectId, classroomId, date, mode, dayOfWeek);
     }
 

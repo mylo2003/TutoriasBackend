@@ -2,7 +2,9 @@ package com.tutorias.domain.service;
 
 import com.tutorias.domain.dto.CreateUserDTO;
 import com.tutorias.domain.dto.EditSubjectUserDTO;
+import com.tutorias.domain.model.SubjectUser;
 import com.tutorias.domain.model.User;
+import com.tutorias.domain.repository.SubjectUserRepository;
 import com.tutorias.domain.repository.UserRepository;
 import com.tutorias.persistance.crud.CarreraCrudRepository;
 import com.tutorias.persistance.crud.MateriaCrudRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +34,8 @@ public class UserService {
     private MateriaUsuarioCrudRepository materiaUsuarioCrudRepository;
     @Autowired
     private MateriaCrudRepository materiaCrudRepository;
+    @Autowired
+    private SubjectUserRepository subjectUserRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -133,5 +138,19 @@ public class UserService {
     private boolean isValidEmail(String email) {
         String unipamplonaEmailRegex = "^[a-zA-Z0-9._%+-]+@unipamplona\\.edu\\.co$";
         return email.matches(unipamplonaEmailRegex);
+    }
+
+    public List<User> profesoresConMateriasDelEstudiante(Integer idEstudiante) {
+        List<SubjectUser> materiasEstudiante = subjectUserRepository.findByUsuarioIdUsuario(idEstudiante);
+
+        if (materiasEstudiante.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Integer> idsMaterias = materiasEstudiante.stream()
+                .map(SubjectUser::getSubjectId)
+                .collect(Collectors.toList());
+
+        return userRepository.findProfesoresByMateriaIds(idsMaterias, 2);
     }
 }

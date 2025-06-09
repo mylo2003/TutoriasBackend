@@ -3,6 +3,7 @@ package com.tutorias.web.controller;
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,17 +56,17 @@ public class ScheduleController {
 
     @GetMapping("/filtro")
     public ResponseEntity<?> filterSchedule(
-            @RequestParam(required = false) Integer subjectId,
+            @RequestParam(required = false) List<Integer> subjectId,
             @RequestParam(required = false) Integer classroomId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) String mode,
             @RequestParam(required = false) String dayOfWeek) {
 
-        List<Schedule> schedulePage = scheduleService.filterSchedule(
+        List<ResponseScheduleFilterDTO> schedulePage = scheduleService.filterSchedule(
                 subjectId, classroomId, date, mode, dayOfWeek);
 
         String message = schedulePage.isEmpty() ? "No se encontraron horarios." : "Horarios encontrados.";
-        CustomResponse<List<Schedule>> response = new CustomResponse<>(message, schedulePage);
+        CustomResponse<List<ResponseScheduleFilterDTO>> response = new CustomResponse<>(message, schedulePage);
 
         return ResponseEntity.ok(response);
     }
