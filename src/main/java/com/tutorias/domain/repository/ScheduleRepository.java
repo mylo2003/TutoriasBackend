@@ -7,12 +7,14 @@ import com.tutorias.domain.model.Schedule;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ScheduleRepository {
     List<Schedule> getAll();
     Optional<Schedule> getById(int scheduleId);
     List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek);
+    Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario);
     void create(CreateScheduleDTO schedule);
     void update(int scheduleId, CreateScheduleDTO schedule);
     void delete(int scheduleId);

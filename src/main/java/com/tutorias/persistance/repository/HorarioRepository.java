@@ -20,9 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -112,6 +110,54 @@ public class HorarioRepository implements ScheduleRepository {
         }
 
         return predicates;
+    }
+
+    @Override
+    public Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario) {
+        Usuario usuario = usuarioCrudRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        boolean esProfesor = usuario.getIdRol() == 2; // ajusta según tu lógica de roles
+        Map<String, List<ResponseScheduleFilterDTO>> response = new HashMap<>();
+
+        if (esProfesor) {
+            List<Horario> activos = jpaRepository.findByUsuario_IdUsuarioAndIsDeletedFalseAndFechaHorarioAfterOrderByFechaHorarioAsc(
+                    idUsuario, LocalDateTime.now());
+            List<Horario> finalizados = jpaRepository.findTop15ByUsuario_IdUsuarioAndIsDeletedFalseAndFechaHorarioBeforeOrderByFechaHorarioDesc(
+                    idUsuario, LocalDateTime.now());
+
+            response.put("activos", mapHorariosToDtoList(activos));
+            response.put("finalizados", mapHorariosToDtoList(finalizados));
+
+        } else {
+            // Estudiante
+            Set<Integer> materiasEstudiante = usuario.getMateriaUsuarios()
+                    .stream()
+                    .map(mu -> mu.getMateria().getIdMateria())
+                    .collect(Collectors.toSet());
+
+            // Horarios de profesores con materias en común
+            List<Horario> horariosRelacionados = jpaRepository.findHorariosRelacionadosConMaterias(usuario.getIdUsuario(),
+                    materiasEstudiante, LocalDateTime.now());
+
+            // Horarios agendados por el estudiante
+            List<Horario> agendados = jpaRepository.findHorariosAgendadosPorEstudiante(idUsuario);
+
+            // Últimas 15 finalizadas donde el estudiante asistió
+            List<Horario> finalizadas = jpaRepository.findUltimas15FinalizadasDelEstudiante(idUsuario, LocalDateTime.now());
+
+            response.put("disponibles", mapHorariosToDtoList(horariosRelacionados));
+            response.put("agendados", mapHorariosToDtoList(agendados));
+            response.put("finalizados", mapHorariosToDtoList(finalizadas));
+        }
+
+        return response;
+    }
+
+    private List<ResponseScheduleFilterDTO> mapHorariosToDtoList(List<Horario> horarios) {
+        return horarios.stream()
+                .map(mapperDTO::toResponseScheduleDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

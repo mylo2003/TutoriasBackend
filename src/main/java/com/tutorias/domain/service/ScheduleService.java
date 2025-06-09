@@ -21,6 +21,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,6 +49,10 @@ public class ScheduleService {
 
     public List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
         return scheduleRepository.filterSchedule(subjectId, classroomId, date, mode, dayOfWeek);
+    }
+
+    public Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario) {
+        return scheduleRepository.obtenerHorariosPorUsuario(idUsuario);
     }
 
     public void createSchedule(CreateScheduleDTO schedule) {

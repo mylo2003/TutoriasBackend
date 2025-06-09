@@ -71,6 +71,12 @@ public class ScheduleController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/filtrar-por-usuario/{idUsuario}")
+    public ResponseEntity<Map<String, List<ResponseScheduleFilterDTO>>> filtrarHorariosPorUsuario(@PathVariable Integer idUsuario) {
+        Map<String, List<ResponseScheduleFilterDTO>> resultado = scheduleService.obtenerHorariosPorUsuario(idUsuario);
+        return ResponseEntity.ok(resultado);
+    }
+
     @PostMapping
     public ResponseEntity<?> createSchedule(@RequestBody CreateScheduleDTO schedule) {
         try {
