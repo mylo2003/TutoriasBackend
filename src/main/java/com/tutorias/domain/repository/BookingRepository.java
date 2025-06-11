@@ -12,7 +12,6 @@ public interface BookingRepository {
     List<Booking> getAll();
     Optional<Booking> getById(int bookingId);
     void create(CreateBookingDTO booking);
-    void update(int bookingId, CreateBookingDTO booking);
     void delete(int bookingId);
     void rating(int bookingId, int rating);
     List<Booking> findBookingsByHoraCercana(LocalDate fecha, LocalTime horaMenos, LocalTime horaMas);

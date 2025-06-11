@@ -1,18 +1,15 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
-import com.tutorias.domain.dto.CustomResponse;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
 import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,23 +49,6 @@ public class ScheduleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", e.getMessage()));
         }
-    }
-
-    @GetMapping("/filtro")
-    public ResponseEntity<?> filterSchedule(
-            @RequestParam(required = false) List<Integer> subjectId,
-            @RequestParam(required = false) Integer classroomId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(required = false) String mode,
-            @RequestParam(required = false) String dayOfWeek) {
-
-        List<ResponseScheduleFilterDTO> schedulePage = scheduleService.filterSchedule(
-                subjectId, classroomId, date, mode, dayOfWeek);
-
-        String message = schedulePage.isEmpty() ? "No se encontraron horarios." : "Horarios encontrados.";
-        CustomResponse<List<ResponseScheduleFilterDTO>> response = new CustomResponse<>(message, schedulePage);
-
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/filtrar-por-usuario/{idUsuario}")

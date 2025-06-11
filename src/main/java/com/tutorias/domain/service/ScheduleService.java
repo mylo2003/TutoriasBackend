@@ -47,10 +47,6 @@ public class ScheduleService {
         return scheduleRepository.getById(scheduleId);
     }
 
-    public List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectId, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
-        return scheduleRepository.filterSchedule(subjectId, classroomId, date, mode, dayOfWeek);
-    }
-
     public Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario) {
         return scheduleRepository.obtenerHorariosPorUsuario(idUsuario);
     }

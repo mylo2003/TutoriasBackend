@@ -12,13 +12,9 @@ import com.tutorias.persistance.mapper.ScheduleMapper;
 import com.tutorias.persistance.mapper.ScheduleResponseMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.*;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -54,62 +50,6 @@ public class HorarioRepository implements ScheduleRepository {
     public Optional<Schedule> getById(int scheduleId) {
         return jpaRepository.findById(scheduleId)
                 .map(mapper::toSchedule);
-    }
-
-    @Override
-    public List<ResponseScheduleFilterDTO> filterSchedule(List<Integer> subjectIds, Integer classroomId, LocalDate date, String mode, String dayOfWeek) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<Horario> query = cb.createQuery(Horario.class);
-        Root<Horario> root = query.from(Horario.class);
-        List<Predicate> predicates = buildHorarioPredicates(cb, root, subjectIds, classroomId, date, mode, dayOfWeek);
-        query.select(root).distinct(true).where(cb.and(predicates.toArray(new Predicate[0])));
-
-        TypedQuery<Horario> typedQuery = entityManager.createQuery(query);
-        List<Horario> resultList = typedQuery.getResultList();
-
-        return resultList.stream()
-                .map(mapperDTO::toResponseScheduleDTO)
-                .collect(Collectors.toList());
-    }
-
-    private List<Predicate> buildHorarioPredicates(CriteriaBuilder cb, Root<Horario> root,
-                                                   List<Integer> subjectIds, Integer classroomId,
-                                                   LocalDate date, String mode, String dayOfWeek) {
-        List<Predicate> predicates = new ArrayList<>();
-
-        predicates.add(cb.isFalse(root.get("isDeleted")));
-
-        if (subjectIds != null && !subjectIds.isEmpty()) {
-            predicates.add(root.get("materia").get("idMateria").in(subjectIds));
-        }
-
-        if (classroomId != null) {
-            predicates.add(cb.equal(root.get("salon").get("idSalon"), classroomId));
-        }
-
-        if (date != null) {
-            predicates.add(cb.equal(cb.function("DATE", LocalDate.class, root.get("fechaHorario")), date));
-        }
-
-        if (mode != null && !mode.trim().isEmpty()) {
-            String modoLower = mode.trim().toLowerCase();
-            predicates.add(cb.equal(cb.lower(root.get("modo")), modoLower));
-
-            if (modoLower.equals("finalizado")) {
-                // Solo mostrar asesorías finalizadas de esta semana
-                LocalDate now = LocalDate.now();
-                LocalDate startOfWeek = now.with(java.time.DayOfWeek.MONDAY);
-                LocalDate endOfWeek = now.with(java.time.DayOfWeek.SUNDAY);
-
-                Expression<LocalDate> fechaSolo = cb.function("DATE", LocalDate.class, root.get("fechaHorario"));
-                predicates.add(cb.between(fechaSolo, startOfWeek, endOfWeek));
-            }
-        } else {
-            predicates.add(cb.notEqual(cb.lower(root.get("modo")), "finalizado"));
-        }
-
-        return predicates;
     }
 
     @Override

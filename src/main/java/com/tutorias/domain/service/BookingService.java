@@ -26,10 +26,6 @@ public class BookingService {
         bookingRepository.create(booking);
     }
 
-    public void updateBooking(int bookingId, CreateBookingDTO booking) {
-        bookingRepository.update(bookingId, booking);
-    }
-
     public void deleteBooking(int bookingId) {
         bookingRepository.delete(bookingId);
     }

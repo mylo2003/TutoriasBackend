@@ -66,34 +66,6 @@ public class AgendacionRepository implements BookingRepository {
     }
 
     @Override
-    public void update(int bookingId, CreateBookingDTO booking) {
-        Agendado agendado = jpaRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));
-
-        if (booking.getUserId() != 0) {
-            Usuario usuario = usuarioCrudRepository.findById(booking.getUserId())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            agendado.setUsuario(usuario);
-        }
-
-        if (booking.getScheduleId() != 0) {
-            Horario horario = horarioCrudRepository.findById(booking.getScheduleId())
-                    .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
-            agendado.setHorario(horario);
-        }
-
-        // Reactivar la agendación si estaba eliminada
-        if (agendado.getEliminado()) {
-            agendado.setEliminado(false);
-            agendado.setDeletedAt(null);
-        }
-
-        agendado.setHoraAgendado(LocalDateTime.now());
-        jpaRepository.save(agendado);
-    }
-
-
-    @Override
     public void delete(int bookingId) {
         Agendado agendado = jpaRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Agendación no encontrada"));

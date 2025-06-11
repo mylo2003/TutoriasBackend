@@ -61,18 +61,6 @@ public class BookingController {
         }
     }
 
-    @PutMapping("/{idAgendacion}")
-    public ResponseEntity<?> updateBooking(@PathVariable int idAgendacion, @RequestBody CreateBookingDTO booking) {
-        try {
-            bookingService.updateBooking(idAgendacion, booking);
-            return ResponseEntity.status(HttpStatus.OK).body("Agendación actualizada exitosamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Map.of("error", e.getMessage())
-            );
-        }
-    }
-
     @DeleteMapping("/{idAgendacion}")
     public ResponseEntity<?> deleteBooking(@PathVariable int idAgendacion) {
         try {
