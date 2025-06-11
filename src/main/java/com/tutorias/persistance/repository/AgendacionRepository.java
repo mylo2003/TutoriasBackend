@@ -47,13 +47,22 @@ public class AgendacionRepository implements BookingRepository {
         Horario horario = horarioCrudRepository.findById(booking.getScheduleId())
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-        Agendado agendado = new Agendado();
+        Optional<Agendado> agendadoExistenteOpt = jpaRepository
+                .findByUsuario_IdUsuarioAndHorario_IdHorarioAndEliminadoTrue(booking.getUserId(), booking.getScheduleId());
 
-        agendado.setUsuario(usuario);
-        agendado.setHorario(horario);
-        agendado.setHoraAgendado(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-
-        jpaRepository.save(agendado);
+        if (agendadoExistenteOpt.isPresent()) {
+            Agendado agendado = agendadoExistenteOpt.get();
+            agendado.setEliminado(false);
+            agendado.setDeletedAt(null);
+            agendado.setHoraAgendado(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+            jpaRepository.save(agendado);
+        } else {
+            Agendado agendado = new Agendado();
+            agendado.setUsuario(usuario);
+            agendado.setHorario(horario);
+            agendado.setHoraAgendado(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+            jpaRepository.save(agendado);
+        }
     }
 
     @Override
@@ -73,10 +82,16 @@ public class AgendacionRepository implements BookingRepository {
             agendado.setHorario(horario);
         }
 
-        agendado.setHoraAgendado(LocalDateTime.now());
+        // Reactivar la agendación si estaba eliminada
+        if (agendado.getEliminado()) {
+            agendado.setEliminado(false);
+            agendado.setDeletedAt(null);
+        }
 
+        agendado.setHoraAgendado(LocalDateTime.now());
         jpaRepository.save(agendado);
     }
+
 
     @Override
     public void delete(int bookingId) {

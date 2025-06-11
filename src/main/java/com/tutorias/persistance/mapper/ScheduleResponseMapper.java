@@ -47,5 +47,12 @@ public interface ScheduleResponseMapper {
     @Mapping(source = "idAgendado", target = "id")
     ResponseScheduleFilterDTO.AgendadoInfo toAgendadoInfo(Agendado agendado);
 
-    List<ResponseScheduleFilterDTO.AgendadoInfo> toAgendadoInfoList(List<Agendado> agendados);
+    //List<ResponseScheduleFilterDTO.AgendadoInfo> toAgendadoInfoList(List<Agendado> agendados);
+    default List<ResponseScheduleFilterDTO.AgendadoInfo> toAgendadoInfoList(List<Agendado> agendados) {
+        if (agendados == null) return List.of();
+        return agendados.stream()
+                .filter(a -> Boolean.FALSE.equals(a.getEliminado()))
+                .map(this::toAgendadoInfo)
+                .toList();
+    }
 }

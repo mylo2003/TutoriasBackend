@@ -28,6 +28,11 @@ public interface HorarioCrudRepository extends JpaRepository<Horario, Integer> {
           AND h.materia.idMateria IN :materias
           AND h.fechaHorario > :now
           AND h.usuario.idUsuario != :idEstudiante
+          AND h NOT IN (
+            SELECT a.horario FROM Agendado a
+             WHERE a.usuario.idUsuario = :idEstudiante
+             AND a.eliminado = false
+          )
         ORDER BY h.fechaHorario ASC
         """)
     List<Horario> findHorariosRelacionadosConMaterias(@Param("idEstudiante") Integer idEstudiante, @Param("materias") Set<Integer> materias, @Param("now") LocalDateTime now);
@@ -38,6 +43,7 @@ public interface HorarioCrudRepository extends JpaRepository<Horario, Integer> {
         WHERE h.isDeleted = false
           AND a.usuario.idUsuario = :idEstudiante
           AND a.eliminado = false
+          AND (h.modo IS NULL OR h.modo <> 'FINALIZADO')
         ORDER BY h.fechaHorario ASC
         """)
     List<Horario> findHorariosAgendadosPorEstudiante(@Param("idEstudiante") Integer idEstudiante);

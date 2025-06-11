@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface AgendacionCrudRepository extends JpaRepository<Agendado, Integer> {
     @Query("SELECT a FROM Agendado a " +
@@ -18,6 +19,7 @@ public interface AgendacionCrudRepository extends JpaRepository<Agendado, Intege
                                              @Param("horaMenos") LocalTime horaMenos,
                                              @Param("horaMas") LocalTime horaMas);
 
+    Optional<Agendado> findByUsuario_IdUsuarioAndHorario_IdHorarioAndEliminadoTrue(Integer idUsuario, Integer idHorario);
 
     @Query("""
     SELECT b FROM Agendado b
