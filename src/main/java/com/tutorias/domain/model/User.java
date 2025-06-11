@@ -23,9 +23,6 @@ public class User {
     private String email;
     private int semester;
     private Double averageRating;
-//    private String password;
-//    private Boolean isDeleted;
-//    private LocalDateTime deletedAt;
     private Career career;
     private Role role;
     private List<SubjectUser> subjectUsers;

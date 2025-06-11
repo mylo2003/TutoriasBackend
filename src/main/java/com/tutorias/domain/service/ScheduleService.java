@@ -182,7 +182,7 @@ public class ScheduleService {
 
             EstadoAsesoria nuevoModo = automataEstado.transitar(
                     ahora,
-                    schedule.getScheduleDate().toLocalDate(),
+                    schedule.getScheduleDate(),
                     schedule.getStartTime(),
                     schedule.getEndTime()
             );

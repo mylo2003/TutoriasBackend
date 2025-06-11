@@ -15,7 +15,9 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,34 +59,30 @@ public class HorarioRepository implements ScheduleRepository {
         Usuario usuario = usuarioCrudRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        boolean esProfesor = usuario.getIdRol() == 2; // ajusta según tu lógica de roles
+        boolean esProfesor = usuario.getIdRol() == 2;
         Map<String, List<ResponseScheduleFilterDTO>> response = new HashMap<>();
 
         if (esProfesor) {
-            List<Horario> activos = jpaRepository.findByUsuario_IdUsuarioAndIsDeletedFalseAndFechaHorarioAfterOrderByFechaHorarioAsc(
-                    idUsuario, LocalDateTime.now());
-            List<Horario> finalizados = jpaRepository.findTop15ByUsuario_IdUsuarioAndIsDeletedFalseAndFechaHorarioBeforeOrderByFechaHorarioDesc(
-                    idUsuario, LocalDateTime.now());
+            List<Horario> activos = jpaRepository.findByUsuario_IdUsuarioAndIsDeletedFalseAndModoInOrderByFechaHorarioAsc(
+                    idUsuario, Arrays.asList("DISPONIBLE", "EN_CURSO"));
+            List<Horario> finalizados = jpaRepository.findTop15ByUsuario_IdUsuarioAndIsDeletedFalseAndModoOrderByFechaHorarioDesc(
+                    idUsuario, "FINALIZADO");
 
             response.put("activos", mapHorariosToDtoList(activos));
             response.put("finalizados", mapHorariosToDtoList(finalizados));
 
         } else {
-            // Estudiante
             Set<Integer> materiasEstudiante = usuario.getMateriaUsuarios()
                     .stream()
                     .map(mu -> mu.getMateria().getIdMateria())
                     .collect(Collectors.toSet());
 
-            // Horarios de profesores con materias en común
             List<Horario> horariosRelacionados = jpaRepository.findHorariosRelacionadosConMaterias(usuario.getIdUsuario(),
-                    materiasEstudiante, LocalDateTime.now());
+                    materiasEstudiante);
 
-            // Horarios agendados por el estudiante
             List<Horario> agendados = jpaRepository.findHorariosAgendadosPorEstudiante(idUsuario);
 
-            // Últimas 15 finalizadas donde el estudiante asistió
-            List<Horario> finalizadas = jpaRepository.findUltimas15FinalizadasDelEstudiante(idUsuario, LocalDateTime.now());
+            List<Horario> finalizadas = jpaRepository.findUltimas15FinalizadasDelEstudiante(idUsuario);
 
             response.put("disponibles", mapHorariosToDtoList(horariosRelacionados));
             response.put("agendados", mapHorariosToDtoList(agendados));

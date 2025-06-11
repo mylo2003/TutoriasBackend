@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class ResponseScheduleFilterDTO {
     private UsuarioInfo usuario;
     private MateriaInfo materia;
     private String descripcion;
-    private LocalDateTime fechaHorario;
+    private LocalDate fechaHorario;
     private LocalTime horaInicio;
     private LocalTime horaFin;
     private String modo;

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Schedule {
     private Integer subjectId;
     private Integer userId;
     private String description;
-    private LocalDateTime scheduleDate;
+    private LocalDate scheduleDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private String mode;

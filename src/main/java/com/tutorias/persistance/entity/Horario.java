@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Horario {
     private String descripcion;
 
     @Column(name = "fecha_horario", nullable = false)
-    private LocalDateTime fechaHorario;
+    private LocalDate fechaHorario;
 
     @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;
