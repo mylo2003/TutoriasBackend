@@ -1,5 +1,6 @@
 package com.tutorias.persistance.repository;
 
+import com.tutorias.domain.dto.SubjectFilter;
 import com.tutorias.domain.model.SubjectUser;
 import com.tutorias.domain.repository.SubjectUserRepository;
 import com.tutorias.persistance.crud.MateriaUsuarioCrudRepository;
@@ -19,5 +20,10 @@ public class MateriaUsuarioRepository implements SubjectUserRepository {
     @Override
     public List<SubjectUser> findByUsuarioIdUsuario(Integer idEstudiante) {
         return mapper.toSubjectUsers(jpaRepository.findByUsuario_IdUsuario(idEstudiante));
+    }
+
+    @Override
+    public List<SubjectFilter> filterByUserId(Integer userId) {
+        return jpaRepository.findMateriasByUsuario(userId);
     }
 }

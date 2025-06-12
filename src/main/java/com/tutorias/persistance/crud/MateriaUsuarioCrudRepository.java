@@ -1,5 +1,6 @@
 package com.tutorias.persistance.crud;
 
+import com.tutorias.domain.dto.SubjectFilter;
 import com.tutorias.persistance.entity.MateriaUsuario;
 import com.tutorias.persistance.entity.MateriaUsuarioPK;
 import jakarta.transaction.Transactional;
@@ -25,4 +26,9 @@ public interface MateriaUsuarioCrudRepository extends JpaRepository<MateriaUsuar
 
     @Query("SELECT mu.id.idMateria FROM MateriaUsuario mu WHERE mu.id.idUsuario = :idUsuario")
     List<Integer> findMateriaIdsByUsuarioId(@Param("idUsuario") Integer idUsuario);
+
+    @Query("SELECT m.materia.idMateria AS idMateria, m.materia.nombreMateria AS nombreMateria " +
+            "FROM MateriaUsuario m " +
+            "WHERE m.usuario.idUsuario = :idUsuario")
+    List<SubjectFilter> findMateriasByUsuario(@Param("idUsuario") Integer idUsuario);
 }

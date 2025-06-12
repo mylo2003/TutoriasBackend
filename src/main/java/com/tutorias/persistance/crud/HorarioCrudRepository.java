@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -69,4 +70,8 @@ public interface HorarioCrudRepository extends JpaRepository<Horario, Integer> {
     default List<Horario> findUltimas15FinalizadasDelEstudiante(Integer id) {
         return findUltimas15FinalizadasDelEstudiante(id, PageRequest.of(0, 15));
     }
+
+    @Query("SELECT h FROM Horario h WHERE h.salon.id = :salonId AND h.fechaHorario = :fecha AND h.isDeleted = false")
+    List<Horario> findBySalon_IdSalonAndFechaHorario(@Param("salonId") Integer salonId,
+                                                     @Param("fecha") LocalDate fecha);
 }

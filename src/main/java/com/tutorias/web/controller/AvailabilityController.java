@@ -2,6 +2,7 @@ package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateAvailabilityDTO;
 import com.tutorias.domain.dto.CustomResponse;
+import com.tutorias.domain.dto.ResponseAvailabilityDTO;
 import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +103,22 @@ public class AvailabilityController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     Map.of("error", e.getMessage())
             );
+        }
+    }
+
+    @GetMapping("/salon/{salonId}")
+    public ResponseEntity<List<ResponseAvailabilityDTO>> obtenerDisponibilidades(
+            @PathVariable Integer salonId,
+            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate fecha) {
+
+        try {
+            List<ResponseAvailabilityDTO> disponibilidades =
+                    availabilityService.obtenerDisponibilidades(fecha, salonId);
+
+            return ResponseEntity.ok(disponibilidades);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
