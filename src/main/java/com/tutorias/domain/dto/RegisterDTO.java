@@ -43,8 +43,6 @@ public class RegisterDTO {
     private String email;
 
     @NotNull(message = "El semestre es obligatorio")
-    @Min(value = 1, message = "El semestre debe ser mayor a 0")
-    @Max(value = 12, message = "El semestre no puede ser mayor a 12")
     private Integer semester;
 
     @NotNull(message = "Debe seleccionar al menos una materia")

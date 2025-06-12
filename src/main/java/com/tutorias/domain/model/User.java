@@ -23,6 +23,7 @@ public class User {
     private String email;
     private int semester;
     private Double averageRating;
+    private Integer totalSchedule;
 //    private String password;
 //    private Boolean isDeleted;
 //    private LocalDateTime deletedAt;

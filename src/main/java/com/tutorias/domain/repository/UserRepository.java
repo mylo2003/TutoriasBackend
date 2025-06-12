@@ -21,4 +21,5 @@ public interface UserRepository {
     boolean existsByUsernameAndNotId(String username, Integer idUser);
     boolean existsByEmailAndNotId(String email, Integer idUser);
     List<User> findProfesoresByMateriaIds(List<Integer> subjectIds, Integer rolId);
+    Integer countSchedulesByIdUser(int idUser);
 }

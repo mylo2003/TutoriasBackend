@@ -20,4 +20,9 @@ public class MateriaUsuarioRepository implements SubjectUserRepository {
     public List<SubjectUser> findByUsuarioIdUsuario(Integer idEstudiante) {
         return mapper.toSubjectUsers(jpaRepository.findByUsuario_IdUsuario(idEstudiante));
     }
+
+    @Override
+    public List<Integer> getMateriaIdsByUsuarioId(Integer idUser){
+        return jpaRepository.findMateriaIdsByUsuarioId(idUser);
+    }
 }

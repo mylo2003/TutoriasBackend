@@ -4,10 +4,7 @@ import com.tutorias.domain.dto.CreateUserDTO;
 import com.tutorias.domain.dto.EditSubjectUserDTO;
 import com.tutorias.domain.model.User;
 import com.tutorias.domain.repository.UserRepository;
-import com.tutorias.persistance.crud.CarreraCrudRepository;
-import com.tutorias.persistance.crud.MateriaUsuarioCrudRepository;
-import com.tutorias.persistance.crud.RolCrudRepository;
-import com.tutorias.persistance.crud.UsuarioCrudRepository;
+import com.tutorias.persistance.crud.*;
 import com.tutorias.persistance.entity.Carrera;
 import com.tutorias.persistance.entity.Rol;
 import com.tutorias.persistance.entity.Usuario;
@@ -28,6 +25,8 @@ public class UsuarioRepository implements UserRepository{
     private MateriaUsuarioCrudRepository materiaUsuarioCrudRepository;
     @Autowired
     private UserMapper mapper;
+    @Autowired
+    private HorarioCrudRepository horarioCrudRepository;
 
     @Override
     public List<User> getAll(){ return mapper.toUsers(usuarioCrudRepository.findAll()); }
@@ -111,5 +110,10 @@ public class UsuarioRepository implements UserRepository{
     @Override
     public List<User> findProfesoresByMateriaIds(List<Integer> subjectIds, Integer rolId) {
         return mapper.toUsers(usuarioCrudRepository.findProfesoresByMateriaIds(subjectIds, rolId));
+    }
+
+    @Override
+    public Integer countSchedulesByIdUser(int idUser){
+        return horarioCrudRepository.countByUsuario_IdUsuario(idUser);
     }
 }

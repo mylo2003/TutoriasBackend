@@ -15,7 +15,7 @@ import java.util.Set;
 public interface HorarioCrudRepository extends JpaRepository<Horario, Integer> {
     List<Horario> findAllByIsDeletedFalseAndModoNot(String modo);
     List<ResponseScheduleDTO> findAllByUsuario_IdUsuarioAndIsDeletedFalseAndModoNot(Integer userId, String modo);
-
+    int countByUsuario_IdUsuario(Integer idUser);
     // Profesor
     List<Horario> findByUsuario_IdUsuarioAndIsDeletedFalseAndFechaHorarioAfterOrderByFechaHorarioAsc(Integer idUsuario, LocalDateTime now);
 

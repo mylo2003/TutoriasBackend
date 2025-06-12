@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +21,5 @@ public class CreateUserDTO {
     private Integer semester;
     private Double averageRating;
     private String password;
+    private List<Integer> idSubjects;
 }

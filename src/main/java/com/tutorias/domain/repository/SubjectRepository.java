@@ -15,4 +15,5 @@ public interface SubjectRepository {
     List<SubjectFilter> filterByCareerId(int careerId);
     void create(CreateSubjectDTO subject);
     void delete(int subjectId);
+    List<Integer> getMateriaIdsExisting(List<Integer> idSubjects);
 }

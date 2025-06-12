@@ -24,7 +24,7 @@ public class JwtUtil {
     }
 
     public String create(String username) {
-        Usuario usuario = usuarioCrudRepository.findByUsuario(username)
+        Usuario usuario = usuarioCrudRepository.findByUsuarioWithRol(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
         if (usuario.getRol() == null) {
             throw new RuntimeException("Usuario sin rol asignado: " + username);
