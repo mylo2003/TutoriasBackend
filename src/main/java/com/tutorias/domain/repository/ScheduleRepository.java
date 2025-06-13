@@ -2,10 +2,10 @@ package com.tutorias.domain.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleEditDTO;
 import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Schedule;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ScheduleRepository {
     List<Schedule> getAll();
     Optional<Schedule> getById(int scheduleId);
+    Optional<ResponseScheduleEditDTO> getByIdToEdit(int scheduleId);
     Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario);
     void create(CreateScheduleDTO schedule);
     void update(int scheduleId, CreateScheduleDTO schedule);

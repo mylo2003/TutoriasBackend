@@ -1,6 +1,5 @@
 package com.tutorias.persistance.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "materias_usuarios")
 public class MateriaUsuario {
-
     @EmbeddedId
     private MateriaUsuarioPK id;
 

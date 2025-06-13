@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class, CareerMapper.class, SubjectUserMapper.class})
 public interface UserMapper {

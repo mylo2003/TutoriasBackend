@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -32,8 +31,6 @@ public class UserService {
     private CarreraCrudRepository carreraCrudRepository;
     @Autowired
     private MateriaUsuarioCrudRepository materiaUsuarioCrudRepository;
-    @Autowired
-    private MateriaCrudRepository materiaCrudRepository;
     @Autowired
     private SubjectUserRepository subjectUserRepository;
     @Autowired

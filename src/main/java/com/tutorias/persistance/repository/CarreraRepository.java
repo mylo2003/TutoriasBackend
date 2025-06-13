@@ -4,7 +4,6 @@ import com.tutorias.domain.dto.CreateCareerDTO;
 import com.tutorias.domain.model.Career;
 import com.tutorias.domain.repository.CareerRepository;
 import com.tutorias.persistance.crud.CarreraCrudRepository;
-import com.tutorias.persistance.entity.Bloque;
 import com.tutorias.persistance.entity.Carrera;
 import com.tutorias.persistance.mapper.CareerMapper;
 import org.springframework.beans.factory.annotation.Autowired;

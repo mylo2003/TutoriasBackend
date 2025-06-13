@@ -5,7 +5,6 @@ import com.tutorias.domain.model.Block;
 import com.tutorias.domain.repository.BlockRepository;
 import com.tutorias.persistance.crud.BloqueCrudRepository;
 import com.tutorias.persistance.entity.Bloque;
-import com.tutorias.persistance.entity.Disponibilidad;
 import com.tutorias.persistance.mapper.BlockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

@@ -16,7 +16,6 @@ public interface SubjectMapper {
             @Mapping(source = "nombreMateria", target = "subjectName"),
             @Mapping(source = "idCarrera", target = "careerId"),
             @Mapping(source = "carrera", target = "career"),
-            //@Mapping(source = "materiaUsuarios", target = "subjectUsers")
     })
     Subject toSubject(Materia materia);
     List<Subject> toSubjects(List<Materia> materias);

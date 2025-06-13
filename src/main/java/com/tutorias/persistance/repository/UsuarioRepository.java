@@ -4,17 +4,11 @@ import com.tutorias.domain.dto.CreateUserDTO;
 import com.tutorias.domain.dto.EditSubjectUserDTO;
 import com.tutorias.domain.model.User;
 import com.tutorias.domain.repository.UserRepository;
-import com.tutorias.persistance.crud.CarreraCrudRepository;
 import com.tutorias.persistance.crud.MateriaUsuarioCrudRepository;
-import com.tutorias.persistance.crud.RolCrudRepository;
 import com.tutorias.persistance.crud.UsuarioCrudRepository;
-import com.tutorias.persistance.entity.Carrera;
-import com.tutorias.persistance.entity.Rol;
 import com.tutorias.persistance.entity.Usuario;
 import com.tutorias.persistance.mapper.UserMapper;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleEditDTO;
 import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.service.ScheduleService;
@@ -39,6 +40,22 @@ public class ScheduleController {
     public ResponseEntity<?> getSchedule(@PathVariable int idHorario) {
         try {
             Optional<Schedule> schedule = scheduleService.getById(idHorario);
+            if (schedule.isPresent()) {
+                return ResponseEntity.ok(schedule.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Horario no encontrado"));
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/edit/{idHorario}")
+    public ResponseEntity<?> getScheduleToEdit(@PathVariable int idHorario) {
+        try {
+            Optional<ResponseScheduleEditDTO> schedule = scheduleService.getByIdToEdit(idHorario);
             if (schedule.isPresent()) {
                 return ResponseEntity.ok(schedule.get());
             } else {

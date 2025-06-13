@@ -3,8 +3,6 @@ package com.tutorias.domain.repository;
 import com.tutorias.domain.dto.CreateUserDTO;
 import com.tutorias.domain.dto.EditSubjectUserDTO;
 import com.tutorias.domain.model.User;
-import com.tutorias.persistance.entity.Usuario;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;

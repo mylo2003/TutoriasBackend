@@ -2,7 +2,9 @@ package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateScheduleDTO;
 import com.tutorias.domain.dto.ResponseScheduleDTO;
+import com.tutorias.domain.dto.ResponseScheduleEditDTO;
 import com.tutorias.domain.dto.ResponseScheduleFilterDTO;
+import com.tutorias.domain.model.Availability;
 import com.tutorias.domain.model.Schedule;
 import com.tutorias.domain.repository.AvailabilityRepository;
 import com.tutorias.domain.repository.ScheduleRepository;
@@ -15,6 +17,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,6 +55,60 @@ public class HorarioRepository implements ScheduleRepository {
     public Optional<Schedule> getById(int scheduleId) {
         return jpaRepository.findById(scheduleId)
                 .map(mapper::toSchedule);
+    }
+
+    @Override
+    public Optional<ResponseScheduleEditDTO> getByIdToEdit(int scheduleId) {
+        return jpaRepository.findById(scheduleId)
+                .map(horario -> {
+                    Salon salon = horario.getSalon();
+                    Bloque bloque = salon.getBloque();
+
+                    String dayOfWeek = obtenerDiaSemana(horario.getFechaHorario());
+
+                    // Buscar disponibilidad usando tu método filterAvailability
+                    List<Availability> disponibilidades = availabilityRepository.filterAvailability(
+                            salon.getIdSalon(),
+                            dayOfWeek,
+                            horario.getHoraInicio(),
+                            horario.getHoraFin()
+                    );
+
+                    Integer availabilityId = disponibilidades.stream()
+                            .findFirst()
+                            .map(Availability::getAvailabilityId) // o getIdDisponibilidad dependiendo de tu DTO
+                            .orElse(null);
+
+                    return ResponseScheduleEditDTO.builder()
+                            .scheduleId(horario.getIdHorario())
+                            .classroomId(salon.getIdSalon())
+                            .blockId(bloque.getIdBloque())
+                            .subjectId(horario.getMateria().getIdMateria())
+                            .userId(horario.getUsuario().getIdUsuario())
+                            .description(horario.getDescripcion())
+                            .scheduleDate(horario.getFechaHorario())
+                            .startTime(horario.getHoraInicio())
+                            .endTime(horario.getHoraFin())
+                            .mode(horario.getModo())
+                            .type(horario.getTipo())
+                            .availabilityId(availabilityId)
+                            .build();
+                });
+    }
+
+
+    private String obtenerDiaSemana(LocalDate fecha) {
+        DayOfWeek dayOfWeek = fecha.getDayOfWeek();
+        switch (dayOfWeek) {
+            case MONDAY: return "LUNES";
+            case TUESDAY: return "MARTES";
+            case WEDNESDAY: return "MIERCOLES";
+            case THURSDAY: return "JUEVES";
+            case FRIDAY: return "VIERNES";
+            case SATURDAY: return "SABADO";
+            case SUNDAY: return "DOMINGO";
+            default: throw new IllegalArgumentException("Día de la semana no válido");
+        }
     }
 
     @Override
@@ -122,7 +179,6 @@ public class HorarioRepository implements ScheduleRepository {
             horario.setSalon(disponibilidad.getSalon());
             horario.setHoraInicio(disponibilidad.getHoraInicio());
             horario.setHoraFin(disponibilidad.getHoraFin());
-            availabilityRepository.updateOccupied(schedule.getAvailabilityId());
 
         } else if ("VIRTUAL".equalsIgnoreCase(schedule.getType())) {
             Salon salon = salonCrudRepository.findById(0)
@@ -151,7 +207,6 @@ public class HorarioRepository implements ScheduleRepository {
                     horario.setSalon(disponibilidad.getSalon());
                     horario.setHoraInicio(disponibilidad.getHoraInicio());
                     horario.setHoraFin(disponibilidad.getHoraFin());
-                    availabilityRepository.updateOccupied(schedule.getAvailabilityId());
                 }
             } else if ("VIRTUAL".equalsIgnoreCase(schedule.getType())) {
                 Salon salon = salonCrudRepository.findById(0)

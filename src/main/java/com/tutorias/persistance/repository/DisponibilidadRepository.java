@@ -143,14 +143,6 @@ public class DisponibilidadRepository implements AvailabilityRepository {
     }
 
     @Override
-    public void updateOccupied(int availabilityId) {
-        Disponibilidad disponibilidad = jpaRepository.findById(availabilityId)
-                .orElseThrow(() -> new RuntimeException("Disponibilidad no encontrada"));
-
-        disponibilidad.setOcupado(!disponibilidad.getOcupado());
-    }
-
-    @Override
     public List<ResponseAvailabilityDTO> obtenerDisponibilidades(LocalDate fecha, Integer salonId) {
         // 1. Obtener el día de la semana de la fecha
         String diaSemana = obtenerDiaSemana(fecha);

@@ -16,6 +16,5 @@ public interface AvailabilityRepository {
     void create(CreateAvailabilityDTO availabilityId);
     void update(int availabilityId, CreateAvailabilityDTO availability);
     void delete(int availabilityId);
-    void updateOccupied(int availabilityId);
     List<ResponseAvailabilityDTO> obtenerDisponibilidades(LocalDate fecha, Integer salonId);
 }

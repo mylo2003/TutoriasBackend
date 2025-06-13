@@ -1,7 +1,6 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.SubjectFilter;
-import com.tutorias.domain.repository.SubjectRepository;
 import com.tutorias.domain.service.SubjectUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

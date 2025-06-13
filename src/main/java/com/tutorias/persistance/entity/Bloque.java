@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 import java.util.List;
 
@@ -28,6 +27,5 @@ public class Bloque {
     private String seccion;
 
     @OneToMany(mappedBy = "bloque", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Where(clause = "id_salon NOT IN (SELECT DISTINCT d.id_salon FROM disponibilidad_salones d WHERE d.ocupado = true)")
     private List<Salon> salones;
 }
