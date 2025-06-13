@@ -38,6 +38,8 @@ public class UserService {
     @Autowired
     private MateriaUsuarioCrudRepository materiaUsuarioCrudRepository;
     @Autowired
+    private MateriaCrudRepository materiaCrudRepository;
+    @Autowired
     private SubjectUserRepository subjectUserRepository;
     @Autowired
     private SubjectRepository subjectRepository;
