@@ -2,19 +2,23 @@ package com.tutorias.domain.service;
 
 import com.tutorias.domain.dto.CreateUserDTO;
 import com.tutorias.domain.dto.EditSubjectUserDTO;
+import com.tutorias.domain.model.Subject;
 import com.tutorias.domain.model.SubjectUser;
 import com.tutorias.domain.model.User;
+import com.tutorias.domain.repository.SubjectRepository;
 import com.tutorias.domain.repository.SubjectUserRepository;
 import com.tutorias.domain.repository.UserRepository;
-import com.tutorias.persistance.crud.CarreraCrudRepository;
-import com.tutorias.persistance.crud.MateriaCrudRepository;
-import com.tutorias.persistance.crud.MateriaUsuarioCrudRepository;
-import com.tutorias.persistance.crud.RolCrudRepository;
+import com.tutorias.persistance.crud.*;
+import com.tutorias.persistance.entity.Materia;
+import com.tutorias.persistance.entity.MateriaUsuario;
+import com.tutorias.persistance.entity.MateriaUsuarioPK;
+import com.tutorias.persistance.entity.Usuario;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +30,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private UsuarioCrudRepository usuarioCrudRepository;
+    @Autowired
     private RolCrudRepository rolCrudRepository;
     @Autowired
     private CarreraCrudRepository carreraCrudRepository;
@@ -34,12 +40,20 @@ public class UserService {
     @Autowired
     private SubjectUserRepository subjectUserRepository;
     @Autowired
+    private SubjectRepository subjectRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<User> getAll(){ return userRepository.getAll(); }
+    public List<User> getAll(){
+        List<User> users = userRepository.getAll();
+        users.forEach(this::calculateTotalSchedule);
+        return users;
+    }
 
     public Optional<User> getById(Integer idUser){
-        return userRepository.getById(idUser);
+        Optional<User> user = userRepository.getById(idUser);
+        user.ifPresent(this::calculateTotalSchedule);
+        return user;
     }
 
     public void updateUser(int idUser, CreateUserDTO body) {
@@ -89,7 +103,16 @@ public class UserService {
             encryptedPassword = passwordEncoder.encode(newPassword);
         }
 
+        List<Integer> validMateriaIds = null;
+        if (body.getIdSubjects() != null && !body.getIdSubjects().isEmpty()) {
+            validMateriaIds = validateAndGetValidMateriaIds(body.getIdSubjects());
+        }
+
         userRepository.updateUser(idUser, body, encryptedPassword);
+
+        if (validMateriaIds != null) {
+            updateUserMaterias(idUser, validMateriaIds);
+        }
     }
 
     public void deleteUserSubjects(EditSubjectUserDTO body) {
@@ -149,5 +172,71 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return userRepository.findProfesoresByMateriaIds(idsMaterias, 2);
+    }
+
+    private List<Integer> validateAndGetValidMateriaIds(List<Integer> materiaIds) {
+
+        List<Integer> cleanIds = materiaIds.stream()
+                .filter(id -> id != null && id > 0)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if (cleanIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Integer> existingIds = subjectRepository.getMateriaIdsExisting(cleanIds);
+
+        List<Integer> nonExistingIds = cleanIds.stream()
+                .filter(id -> !existingIds.contains(id))
+                .collect(Collectors.toList());
+
+        if (!nonExistingIds.isEmpty()) {
+            throw new RuntimeException("Las siguientes materias no existen: " + nonExistingIds);
+        }
+
+        return existingIds;
+    }
+
+    private void updateUserMaterias(int idUser, List<Integer> materiaIds) {
+        List<Integer> currentMateriaIds = subjectUserRepository.getMateriaIdsByUsuarioId(idUser);
+
+        List<Integer> newMateriaIds = materiaIds.stream()
+                .filter(id -> !currentMateriaIds.contains(id))
+                .collect(Collectors.toList());
+
+        if (!newMateriaIds.isEmpty()) {
+            List<MateriaUsuario> newAssignments = new ArrayList<>();
+
+            Usuario usuario = usuarioCrudRepository.findById(idUser)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            for (Integer materiaId : newMateriaIds) {
+                Materia materia = materiaCrudRepository.findById(materiaId)
+                        .orElseThrow(() -> new RuntimeException("Materia no encontrada: " + materiaId));
+
+                MateriaUsuarioPK pk = MateriaUsuarioPK.builder()
+                        .idUsuario(idUser)
+                        .idMateria(materiaId)
+                        .build();
+
+                MateriaUsuario materiaUsuario = new MateriaUsuario();
+                materiaUsuario.setId(pk);
+                materiaUsuario.setUsuario(usuario);
+                materiaUsuario.setMateria(materia);
+
+                newAssignments.add(materiaUsuario);
+            }
+
+            materiaUsuarioCrudRepository.saveAll(newAssignments);
+        }
+    }
+
+    private void calculateTotalSchedule(User user) {
+        if ("PROFESOR".equals(user.getRole().getName().toUpperCase())) {
+            user.setTotalSchedule(userRepository.countSchedulesByIdUser(user.getUserId()));
+        } else {
+            user.setTotalSchedule(0);
+        }
     }
 }

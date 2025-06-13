@@ -82,6 +82,11 @@ public class MateriaRepository implements SubjectRepository {
         return jpaRepository.findByCarreraId(careerId);
     }
 
+    @Override
+    public List<Integer> getMateriaIdsExisting(List<Integer> idSubjects){
+        return jpaRepository.findExistingMateriaIds(idSubjects);
+    }
+
     private List<Predicate> buildSubjectPredicates(CriteriaBuilder cb, Root<Materia> root,
                                                    String subjectName, Integer careerId, String careerName) {
         List<Predicate> predicates = new ArrayList<>();

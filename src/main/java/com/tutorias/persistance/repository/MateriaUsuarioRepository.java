@@ -26,4 +26,9 @@ public class MateriaUsuarioRepository implements SubjectUserRepository {
     public List<SubjectFilter> filterByUserId(Integer userId) {
         return jpaRepository.findMateriasByUsuario(userId);
     }
+
+    @Override
+    public List<Integer> getMateriaIdsByUsuarioId(Integer idUser){
+        return jpaRepository.findMateriaIdsByUsuarioId(idUser);
+    }
 }

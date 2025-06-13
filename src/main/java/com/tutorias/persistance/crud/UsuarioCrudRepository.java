@@ -15,6 +15,8 @@ public interface UsuarioCrudRepository extends JpaRepository<Usuario, Integer> {
     boolean existsByUsuarioAndIdUsuarioNot(String newUsername, Integer idUser);
     boolean existsByCorreoAndIdUsuarioNot(String newEmail, Integer idUser);
 
+    @Query("SELECT u FROM Usuario u JOIN FETCH u.rol WHERE u.usuario = :username")
+    Optional<Usuario> findByUsuarioWithRol(@Param("username") String username);
 
     @Query("SELECT DISTINCT mu.usuario FROM MateriaUsuario mu " +
             "WHERE mu.materia.id IN :materiasIds AND mu.usuario.idRol = :idRolProfesor")

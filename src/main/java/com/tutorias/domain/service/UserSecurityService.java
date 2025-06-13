@@ -20,10 +20,10 @@ public class UserSecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioCrudRepository.findByUsuario(username)
+        Usuario usuario = usuarioCrudRepository.findByUsuarioWithRol(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User" + username + "Not found"));
 
-        String roleName = "ROLE_" + usuario.getRol().getNombreRol();
+        String roleName = "ROLE_" + usuario.getRol().getNombreRol().toUpperCase();
 
         return User.builder()
                 .username(usuario.getUsuario())

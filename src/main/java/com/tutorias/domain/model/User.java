@@ -15,14 +15,13 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     private int userId;
-//    private int careerId;
-//    private int roleId;
     private String name;
     private String lastName;
     private String username;
     private String email;
     private int semester;
     private Double averageRating;
+    private Integer totalSchedule;
     private Career career;
     private Role role;
     private List<SubjectUser> subjectUsers;

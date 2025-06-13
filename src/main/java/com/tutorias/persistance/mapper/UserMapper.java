@@ -19,6 +19,7 @@ public interface UserMapper {
             @Mapping(source = "correo", target = "email"),
             @Mapping(source = "semestre", target = "semester"),
             @Mapping(source = "valoracionPromedio", target = "averageRating"),
+            @Mapping(target = "totalSchedule", ignore = true),
             @Mapping(source = "carrera", target = "career"),
             @Mapping(source = "rol", target = "role"),
             @Mapping(source = "materiaUsuarios", target = "subjectUsers")
@@ -33,5 +34,6 @@ public interface UserMapper {
     @Mapping(target = "contrasenia", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
     @Mapping(target = "isDeleted", ignore = true)
+//    @Mapping(target = "totalSchedule", ignore = true)
     Usuario toUsuario(User user);
 }

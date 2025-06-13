@@ -8,4 +8,5 @@ import java.util.List;
 public interface SubjectUserRepository {
     List<SubjectUser> findByUsuarioIdUsuario(Integer idEstudiante);
     List<SubjectFilter> filterByUserId(Integer userId);
+    List<Integer> getMateriaIdsByUsuarioId(Integer idUser);
 }
