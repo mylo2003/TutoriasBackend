@@ -70,23 +70,35 @@ public class ScheduleService {
         Schedule horarioActualizado = scheduleRepository.getById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Horario no encontrado"));
 
-        Availability nuevaDisponibilidad = null;
-        if (schedule.getAvailabilityId() != 0) {
-            nuevaDisponibilidad = availabilityRepository.getById(schedule.getAvailabilityId())
-                    .orElseThrow(() -> new RuntimeException("Nueva disponibilidad no encontrada"));
-        }
+        boolean isVirtual = "VIRTUAL".equals(horarioActualizado.getType());
 
-        boolean cambioFecha = schedule.getScheduleDate() != null &&
+        boolean cambioFecha = false;
+        boolean cambioHoraInicio = false;
+        boolean cambioHoraFin = false;
+        boolean cambioSalon = false;
+
+        cambioFecha = schedule.getScheduleDate() != null &&
                 !horarioAnterior.getScheduleDate().equals(schedule.getScheduleDate());
 
-        boolean cambioHoraInicio = nuevaDisponibilidad != null &&
-                !horarioAnterior.getStartTime().equals(nuevaDisponibilidad.getStartTime());
+        if (isVirtual) {
+            cambioHoraInicio = schedule.getStartTime() != null &&
+                    !horarioAnterior.getStartTime().equals(schedule.getStartTime());
 
-        boolean cambioHoraFin = nuevaDisponibilidad != null &&
-                !horarioAnterior.getEndTime().equals(nuevaDisponibilidad.getEndTime());
+            cambioHoraFin = schedule.getEndTime() != null &&
+                    !horarioAnterior.getEndTime().equals(schedule.getEndTime());
 
-        boolean cambioSalon = nuevaDisponibilidad != null &&
-                !horarioAnterior.getClassroomId().equals(nuevaDisponibilidad.getClassroomId());
+            cambioSalon = false;
+        } else {
+            Availability nuevaDisponibilidad = null;
+            if (schedule.getAvailabilityId() != 0) {
+                nuevaDisponibilidad = availabilityRepository.getById(schedule.getAvailabilityId())
+                        .orElseThrow(() -> new RuntimeException("Nueva disponibilidad no encontrada"));
+
+                cambioHoraInicio = !horarioAnterior.getStartTime().equals(nuevaDisponibilidad.getStartTime());
+                cambioHoraFin = !horarioAnterior.getEndTime().equals(nuevaDisponibilidad.getEndTime());
+                cambioSalon = !horarioAnterior.getClassroomId().equals(nuevaDisponibilidad.getClassroomId());
+            }
+        }
 
         if ((cambioFecha || cambioHoraInicio || cambioHoraFin || cambioSalon) && !bookingsAfectados.isEmpty()) {
             String mensajeNotificacion = construirMensajeNotificacion(
@@ -120,7 +132,14 @@ public class ScheduleService {
     private String construirMensajeNotificacion(Schedule horario, boolean cambioFecha,
                                                 boolean cambioHoraInicio, boolean cambioHoraFin,
                                                 boolean cambioSalon) {
-        StringBuilder mensaje = new StringBuilder("📢 Cambio en tu tutoría agendada: ");
+
+        ResponseScheduleFilterDTO schedule = scheduleRepository.getByIdToMessage(horario.getScheduleId()).orElseThrow();
+
+        StringBuilder mensaje = new StringBuilder("📢 Cambio de horario para tutoría agendada ")
+                .append(schedule.getMateria().getNombreMateria())
+                .append(" con el profe ")
+                .append(schedule.getUsuario().getNombre()).append(" ")
+                .append(schedule.getUsuario().getApellido()).append(". ");
 
         if (cambioFecha) {
             mensaje.append("Nueva fecha: ").append(horario.getScheduleDate()).append(". ");
@@ -132,7 +151,15 @@ public class ScheduleService {
         }
 
         if (cambioSalon) {
-            mensaje.append("Nuevo salón: ").append(horario.getClassroomId());
+            String ubicacion;
+            if (!"VIRTUAL".equals(schedule.getTipo())) {
+                ubicacion = schedule.getSalon().getUbicacion() + " " +
+                        (schedule.getDescripcion() != null ? schedule.getDescripcion() : "") + " - " +
+                        schedule.getSalon().getBloque().getSeccion();
+            } else {
+                ubicacion = schedule.getSalon().getUbicacion();
+            }
+            mensaje.append("Nuevo salón: ").append(ubicacion).append(". ");
         }
 
         mensaje.append("Revisa los detalles en la aplicación.");

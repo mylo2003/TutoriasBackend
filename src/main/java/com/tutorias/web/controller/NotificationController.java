@@ -1,9 +1,13 @@
 package com.tutorias.web.controller;
 
+import com.tutorias.config.JwtUtil;
 import com.tutorias.domain.service.SseService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
@@ -15,12 +19,27 @@ import java.util.Set;
 @RestController
 @RequestMapping("/notificacion")
 public class NotificationController {
-
+    @Autowired
+    private JwtUtil jwtUtil;
     @Autowired
     private SseService sseService;
 
-    @GetMapping("/conectar/{userId}")
-    public SseEmitter subscribe(@PathVariable Integer userId) {
+    @GetMapping("/conectar/{userId}/{token}")
+    public SseEmitter subscribe(@PathVariable Integer userId, @PathVariable String token, HttpServletRequest request) {
+        if (request.getHeader("Authorization") != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El token debe enviarse exclusivamente en la URL");
+        }
+
+        if (!jwtUtil.isValid(token)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Token inválido");
+        }
+
+        Integer tokenUserId = jwtUtil.getUserId(token);
+        if (!tokenUserId.equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token no coincide con el usuario solicitado");
+        }
+
         return sseService.subscribe(userId);
     }
 

@@ -14,6 +14,7 @@ public interface ScheduleRepository {
     List<Schedule> getAll();
     Optional<Schedule> getById(int scheduleId);
     Optional<ResponseScheduleEditDTO> getByIdToEdit(int scheduleId);
+    Optional<ResponseScheduleFilterDTO> getByIdToMessage(int scheduleId);
     Map<String, List<ResponseScheduleFilterDTO>> obtenerHorariosPorUsuario(Integer idUsuario);
     void create(CreateScheduleDTO schedule);
     void update(int scheduleId, CreateScheduleDTO schedule);

@@ -17,6 +17,7 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -94,6 +95,14 @@ public class HorarioRepository implements ScheduleRepository {
                             .availabilityId(availabilityId)
                             .build();
                 });
+    }
+
+    @Override
+    public Optional<ResponseScheduleFilterDTO> getByIdToMessage(int scheduleId) {
+        Horario horario = jpaRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("No se encontró el horario con ID: " + scheduleId));
+
+        return Optional.of(mapperDTO.toResponseScheduleDTO(horario));
     }
 
 

@@ -48,6 +48,7 @@ public class JwtUtil {
                     .verify(jwt);
             return true;
         } catch (JWTVerificationException e) {
+            System.err.println("Token inválido: " + e.getMessage());
             return false;
         }
     }
@@ -57,5 +58,17 @@ public class JwtUtil {
                 .build()
                 .verify(jwt)
                 .getSubject();
+    }
+
+    public Integer getUserId(String jwt) {
+        try {
+            return JWT.require(ALGORITHM)
+                    .build()
+                    .verify(jwt)
+                    .getClaim("userId")
+                    .asInt();
+        } catch (NullPointerException | JWTVerificationException e) {
+            throw new RuntimeException("Error al obtener userId del token", e);
+        }
     }
 }
