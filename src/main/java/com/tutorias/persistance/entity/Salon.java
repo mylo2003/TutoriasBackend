@@ -30,6 +30,9 @@ public class Salon {
     @Column(name = "ubicacion", length = 50)
     private String ubicacion;
 
+    @Column(name = "capacidad")
+    private String capacidad;
+
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Horario> horarios;
 

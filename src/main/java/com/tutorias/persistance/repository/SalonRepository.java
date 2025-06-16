@@ -1,6 +1,7 @@
 package com.tutorias.persistance.repository;
 
 import com.tutorias.domain.dto.CreateClassroomDTO;
+import com.tutorias.domain.dto.ResponseClassroomDTO;
 import com.tutorias.domain.model.Classroom;
 import com.tutorias.domain.repository.ClassroomRepository;
 import com.tutorias.persistance.crud.BloqueCrudRepository;
@@ -26,15 +27,15 @@ public class SalonRepository implements ClassroomRepository {
     private ClassroomMapper mapper;
 
     @Override
-    public List<Classroom> getAll() {
+    public List<ResponseClassroomDTO> getAll() {
         List<Salon> salones = jpaRepository.findAll();
-        return mapper.toClassrooms(salones);
+        return mapper.toResponseDTOs(salones);
     }
 
     @Override
-    public Optional<Classroom> getById(int classroomId) {
+    public Optional<ResponseClassroomDTO> getById(int classroomId) {
         return jpaRepository.findById(classroomId)
-                .map(mapper::toClassroom);
+                .map(mapper::toResponseDTO);
     }
 
     @Override

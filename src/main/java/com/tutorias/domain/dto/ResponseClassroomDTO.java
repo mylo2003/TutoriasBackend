@@ -1,4 +1,4 @@
-package com.tutorias.domain.model;
+package com.tutorias.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Classroom {
+public class ResponseClassroomDTO {
     private int classroomId;
-    private int blockId;
     private String description;
     private String location;
+    private String blockName;
+    private String section;
     private int capacity;
 }

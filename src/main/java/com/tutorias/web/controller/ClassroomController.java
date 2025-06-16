@@ -1,6 +1,7 @@
 package com.tutorias.web.controller;
 
 import com.tutorias.domain.dto.CreateClassroomDTO;
+import com.tutorias.domain.dto.ResponseClassroomDTO;
 import com.tutorias.domain.model.Classroom;
 import com.tutorias.domain.service.ClassroomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,9 @@ public class ClassroomController {
     private ClassroomService classroomService;
 
     @GetMapping
-    public ResponseEntity<List<Classroom>> getClassrooms() {
+    public ResponseEntity<List<ResponseClassroomDTO>> getClassrooms() {
         try {
-            List<Classroom> classroomList = classroomService.getAll();
+            List<ResponseClassroomDTO> classroomList = classroomService.getAll();
 
             if (classroomList.isEmpty()) {
                 return ResponseEntity.noContent().build();
@@ -39,7 +40,7 @@ public class ClassroomController {
     @GetMapping("/{idSalon}")
     public ResponseEntity<?> getClassroom(@PathVariable int idSalon) {
         try {
-            Optional<Classroom> classroom = classroomService.getById(idSalon);
+            Optional<ResponseClassroomDTO> classroom = classroomService.getById(idSalon);
             if (classroom.isPresent()) {
                 return ResponseEntity.ok(classroom.get());
             } else {

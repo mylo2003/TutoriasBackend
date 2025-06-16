@@ -1,6 +1,7 @@
 package com.tutorias.domain.service;
 
 import com.tutorias.domain.dto.CreateClassroomDTO;
+import com.tutorias.domain.dto.ResponseClassroomDTO;
 import com.tutorias.domain.model.Classroom;
 import com.tutorias.domain.repository.ClassroomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,11 @@ public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
-    public List<Classroom> getAll() {
+    public List<ResponseClassroomDTO> getAll() {
         return classroomRepository.getAll();
     }
 
-    public Optional<Classroom> getById(int classroomId) {
+    public Optional<ResponseClassroomDTO> getById(int classroomId) {
         return classroomRepository.getById(classroomId);
     }
 
