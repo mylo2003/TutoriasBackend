@@ -23,6 +23,9 @@ public class CareerService {
     }
 
     public void createCareer(CreateCareerDTO career) {
+        if (career.getCareerName() == null || career.getCode() == null){
+            throw new RuntimeException("No se admiten valores vacios");
+        }
         careerRepository.create(career);
     }
 

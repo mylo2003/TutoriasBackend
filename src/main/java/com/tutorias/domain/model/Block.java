@@ -15,5 +15,6 @@ public class Block {
     private int blockId;
     private String blockName;
     private String section;
+    private int totalSalons;
     private List<Classroom> classrooms;
 }

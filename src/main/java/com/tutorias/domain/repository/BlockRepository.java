@@ -11,4 +11,5 @@ public interface BlockRepository {
     Optional<Block> getById(int blockId);
     void create(CreateBlockDTO block);
     void delete(int blockId);
+    int countSalonsByIdBlock(Integer idBlock);
 }

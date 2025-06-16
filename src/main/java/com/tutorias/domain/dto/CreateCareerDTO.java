@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateCareerDTO {
     private String careerName;
+    private Integer code;
 }

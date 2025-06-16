@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class CreateSubjectDTO {
     private int careerId;
     private String subjectName;
+    private int code;
+    private int credits;
 }

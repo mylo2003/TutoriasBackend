@@ -26,6 +26,9 @@ public class Materia {
     @Column(name = "nombre_materia", nullable = false, length = 100)
     private String nombreMateria;
 
+    private Integer codigo;
+    private Integer creditos;
+
     @Column(name = "is_deleted")
     @Builder.Default
     private Boolean isDeleted = false;

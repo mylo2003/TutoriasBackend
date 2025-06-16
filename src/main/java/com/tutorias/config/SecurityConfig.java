@@ -39,6 +39,9 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/carreras/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/materias/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/disponibilidad/**").permitAll()
                         .requestMatchers("/notificacion/conectar/**").permitAll()
                         .anyRequest().authenticated()
                 )

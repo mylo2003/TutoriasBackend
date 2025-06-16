@@ -34,14 +34,18 @@ public class CarreraRepository implements CareerRepository {
     @Override
     public void create(CreateCareerDTO career) {
         boolean yaExiste = jpaRepository.findByNombreCarrera(career.getCareerName()).isPresent();
+        boolean codigoExistente = jpaRepository.findByCodigo(career.getCode()).isPresent();
 
         if (yaExiste) {
             throw new RuntimeException("La carrera ya se encuentra registrada");
+        } else if(codigoExistente){
+            throw new RuntimeException("El codigo ya se encuentra registrado en otro programa");
         }
 
         Carrera carrera = new Carrera();
 
         carrera.setNombreCarrera(career.getCareerName());
+        carrera.setCodigo(career.getCode());
         jpaRepository.save(carrera);
     }
 

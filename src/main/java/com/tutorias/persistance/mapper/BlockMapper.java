@@ -15,7 +15,8 @@ public interface BlockMapper {
             @Mapping(source = "idBloque", target = "blockId"),
             @Mapping(source = "nombreBloque", target = "blockName"),
             @Mapping(source = "seccion", target = "section"),
-            @Mapping(source = "salones", target = "classrooms")
+            @Mapping(source = "salones", target = "classrooms"),
+            @Mapping(target = "totalSalons", ignore = true)
     })
     Block toBlock(Bloque bloque);
 

@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SalonCrudRepository extends JpaRepository<Salon, Integer> {
     Page<Salon> findAllByBloque_IdBloque(Integer blockId, Pageable pageable);
+    Integer countByBloque_IdBloque(Integer idBloque);
 }

@@ -13,5 +13,7 @@ public class Subject {
     private int subjectId;
     private int careerId;
     private String subjectName;
+    private int code;
+    private int credits;
     private Career career;
 }

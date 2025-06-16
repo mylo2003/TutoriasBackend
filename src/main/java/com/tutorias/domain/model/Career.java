@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class Career {
     private int careerId;
     private String careerName;
+    private Integer code;
 }

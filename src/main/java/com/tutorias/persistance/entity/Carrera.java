@@ -18,4 +18,6 @@ public class Carrera {
 
     @Column(name = "nombre_carrera")
     private String nombreCarrera;
+
+    private Integer codigo;
 }

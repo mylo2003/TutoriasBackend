@@ -40,13 +40,13 @@ public class MateriaRepository implements SubjectRepository {
 
     @Override
     public List<Subject> getAll() {
-        List<Materia> materias = jpaRepository.findAll();
+        List<Materia> materias = jpaRepository.findByIsDeletedFalse();
         return mapper.toSubjects(materias);
     }
 
     @Override
     public Optional<Subject> getById(int subjectId) {
-        return jpaRepository.findById(subjectId)
+        return jpaRepository.findByIdMateriaAndIsDeletedFalse(subjectId)
                 .map(mapper::toSubject);
     }
 
@@ -90,7 +90,7 @@ public class MateriaRepository implements SubjectRepository {
     private List<Predicate> buildSubjectPredicates(CriteriaBuilder cb, Root<Materia> root,
                                                    String subjectName, Integer careerId, String careerName) {
         List<Predicate> predicates = new ArrayList<>();
-
+        predicates.add(cb.equal(root.get("isDeleted"), false));
         if (subjectName != null && !subjectName.isEmpty()) {
             String filtroMateria = normalize.apply(subjectName);
 
@@ -129,10 +129,12 @@ public class MateriaRepository implements SubjectRepository {
 
     @Override
     public void create(CreateSubjectDTO subject) {
-        boolean yaExiste = jpaRepository.findByNombreMateria(subject.getSubjectName()).isPresent();
-
+        boolean yaExiste = jpaRepository.findByNombreMateriaAndIsDeletedFalse(subject.getSubjectName()).isPresent();
+        boolean codigoExistente = jpaRepository.findByCodigoAndIsDeletedFalse(subject.getCode()).isPresent();
         if (yaExiste) {
             throw new RuntimeException("La materia ya se encuentra registrada");
+        } else if(codigoExistente){
+            throw new RuntimeException("El codigo ya esta asociado a otra materia");
         }
 
         Carrera carrera = carreraCrudRepository.findById(subject.getCareerId())
@@ -143,6 +145,8 @@ public class MateriaRepository implements SubjectRepository {
         materia.setIdCarrera(subject.getCareerId());
         materia.setCarrera(carrera);
         materia.setNombreMateria(subject.getSubjectName());
+        materia.setCodigo(subject.getCode());
+        materia.setCreditos(subject.getCredits());
         jpaRepository.save(materia);
     }
 

@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MateriaCrudRepository extends JpaRepository<Materia, Integer> {
-    Optional<Materia> findByNombreMateria(String nombreMateria);
+    List<Materia> findByIsDeletedFalse();
+    Optional<Materia> findByIdMateriaAndIsDeletedFalse(Integer idMateria);
+    Optional<Materia> findByNombreMateriaAndIsDeletedFalse(String nombreMateria);
+    Optional<Materia> findByCodigoAndIsDeletedFalse(Integer codigo);
     List<Materia> findByIdMateriaInAndIsDeletedFalse(List<Integer> ids);
 
     @Query("SELECT m.idMateria AS idMateria, m.nombreMateria AS nombreMateria " +

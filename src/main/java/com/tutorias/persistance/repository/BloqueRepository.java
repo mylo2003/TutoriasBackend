@@ -4,6 +4,7 @@ import com.tutorias.domain.dto.CreateBlockDTO;
 import com.tutorias.domain.model.Block;
 import com.tutorias.domain.repository.BlockRepository;
 import com.tutorias.persistance.crud.BloqueCrudRepository;
+import com.tutorias.persistance.crud.SalonCrudRepository;
 import com.tutorias.persistance.entity.Bloque;
 import com.tutorias.persistance.mapper.BlockMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class BloqueRepository implements BlockRepository {
     private BloqueCrudRepository jpaRepository;
     @Autowired
     private BlockMapper mapper;
+    @Autowired
+    private SalonCrudRepository salonCrudRepository;
 
     @Override
     public List<Block> getAll() {
@@ -52,5 +55,10 @@ public class BloqueRepository implements BlockRepository {
                 .orElseThrow(() -> new RuntimeException("Bloque no encontrado"));
 
         jpaRepository.deleteById(bloque.getIdBloque());
+    }
+
+    @Override
+    public int countSalonsByIdBlock(Integer idBlock){
+        return salonCrudRepository.countByBloque_IdBloque(idBlock);
     }
 }

@@ -13,7 +13,8 @@ import java.util.List;
 public interface CareerMapper {
     @Mappings({
             @Mapping(source = "idCarrera", target = "careerId"),
-            @Mapping(source = "nombreCarrera", target = "careerName")
+            @Mapping(source = "nombreCarrera", target = "careerName"),
+            @Mapping(source = "codigo", target = "code")
     })
     Career toCareer(Carrera carrera);
     List<Career> toCareers(List<Carrera> carreras);

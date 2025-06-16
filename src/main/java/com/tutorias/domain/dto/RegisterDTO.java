@@ -16,8 +16,8 @@ import java.util.List;
 public class RegisterDTO {
     @JsonProperty("roleID")
     @NotNull(message = "El rol es obligatorio")
-    @Min(value = 1, message = "El rol debe ser 1 (estudiante) o 2 (profesor)")
-    @Max(value = 2, message = "El rol debe ser 1 (estudiante) o 2 (profesor)")
+    @Min(value = 1, message = "El rol debe ser entre 1 y 2 (1 = estudiante, 2 = profesor)")
+    @Max(value = 3, message = "El rol debe ser entre 1 y 2 (1 = estudiante, 2 = profesor)")
     private Integer roleID;
 
     @NotBlank(message = "El nombre es obligatorio")
