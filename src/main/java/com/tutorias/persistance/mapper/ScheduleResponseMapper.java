@@ -29,7 +29,8 @@ public interface ScheduleResponseMapper {
     @Mappings({
             @Mapping(source = "descripcion", target = "descripcion"),
             @Mapping(source = "ubicacion", target = "ubicacion"),
-            @Mapping(source = "bloque", target = "bloque")
+            @Mapping(source = "bloque", target = "bloque"),
+            @Mapping(source = "capacidad", target = "capacidad")
     })
     ResponseScheduleFilterDTO.SalonInfo toSalonInfo(Salon salon);
 

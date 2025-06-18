@@ -13,4 +13,5 @@ public class CreateClassroomDTO {
     private int blockId;
     private String description;
     private String location;
+    private int capacity;
 }

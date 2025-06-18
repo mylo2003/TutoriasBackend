@@ -31,6 +31,7 @@ public class ResponseScheduleFilterDTO {
         private String descripcion;
         private String ubicacion;
         private BloqueInfo bloque;
+        private int capacidad;
     }
 
     @Data
