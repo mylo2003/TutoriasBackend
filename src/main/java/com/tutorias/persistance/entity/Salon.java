@@ -31,7 +31,7 @@ public class Salon {
     private String ubicacion;
 
     @Column(name = "capacidad")
-    private String capacidad;
+    private Integer capacidad;
 
     @OneToMany(mappedBy = "salon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Horario> horarios;

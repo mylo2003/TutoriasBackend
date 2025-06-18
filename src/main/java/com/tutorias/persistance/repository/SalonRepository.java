@@ -54,6 +54,7 @@ public class SalonRepository implements ClassroomRepository {
         salon.setBloque(bloque);
         salon.setDescripcion(classroom.getDescription());
         salon.setUbicacion(classroom.getLocation());
+        salon.setCapacidad(classroom.getCapacity());
         jpaRepository.save(salon);
     }
 
